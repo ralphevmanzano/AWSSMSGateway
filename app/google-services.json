@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "976349377653",
+    "firebase_url": "https://awssmsgateway.firebaseio.com",
+    "project_id": "awssmsgateway",
+    "storage_bucket": "awssmsgateway.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:976349377653:android:ae7a18f1a6d5ea0f",
+        "android_client_info": {
+          "package_name": "com.ralphevmanzano.awssmsgateway"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "976349377653-ia8tkvgsbj6dg3gu2lsb8fil4iahij8n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ralphevmanzano.awssmsgateway",
+            "certificate_hash": "534b043dbda54028de851a80b873e516b56f2ef3"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGkijEBHl17Fbv0OAA0eXh7mjGXEr9ROw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "976349377653-rbt3647lj4utiljmd8f4evr9teje1b25.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

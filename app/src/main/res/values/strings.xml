@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">AWS SMS Gateway</string>
+    <string name="default_notification_channel_id">FCM Notification</string>
+    <string name="fcm_message">Message from FCM</string>
+    <string name="msg_token_fmt">FCM token: %s</string>
+</resources>
