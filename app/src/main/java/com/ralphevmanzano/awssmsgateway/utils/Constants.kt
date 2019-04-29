@@ -14,3 +14,6 @@ const val NOTIFICATION_ID = 1
 
 // Other keys
 const val WORKER_INPUT_DATA = "WORKER_INPUT_DATA"
+
+// Preference keys
+const val PREF_SERVER_IP = "PREF_SERVER_IP"

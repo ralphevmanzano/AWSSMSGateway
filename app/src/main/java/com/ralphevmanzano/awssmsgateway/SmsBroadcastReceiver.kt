@@ -20,121 +20,119 @@ import com.ralphevmanzano.awssmsgateway.utils.WORKER_INPUT_DATA
 import com.ralphevmanzano.awssmsgateway.workers.ApiWorker
 
 
-class SmsBroadcastReceiver :
-    BroadcastReceiver() {
-    private val TAG = "SmsBroadcastReceiver"
+class SmsBroadcastReceiver : BroadcastReceiver() {
+  private val TAG = "SmsBroadcastReceiver"
 
-    private var smsListener: SmsListener? = null
-    private var notificationManager: NotificationManager? = null
-
+  private var smsListener: SmsListener? = null
+  private var notificationManager: NotificationManager? = null
 
 
-    companion object {
-        const val DEFAULT_CHANNEL_NAME = "SMS Notifications"
-        const val DEFAULT_CHANNEL_ID = "sms_notification_id"
-    }
+  companion object {
+    const val DEFAULT_CHANNEL_NAME = "SMS Notifications"
+    const val DEFAULT_CHANNEL_ID = "sms_notification_id"
+  }
 
-    private lateinit var context: Context
+  private lateinit var context: Context
 
-    override fun onReceive(context: Context, intent: Intent) {
-        this.context = context
+  override fun onReceive(context: Context, intent: Intent) {
+    this.context = context
 
-        if (intent.action == Telephony.Sms.Intents.SMS_RECEIVED_ACTION) {
-            var smsSender: String? = null
-            var smsBody = ""
-            var smsTimestamp: Long = 0
+    if (intent.action == Telephony.Sms.Intents.SMS_RECEIVED_ACTION) {
+      var smsSender: String? = null
+      var smsBody = ""
+      var smsTimestamp: Long = 0
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                for (smsMessage in Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
-                    smsSender = smsMessage.displayOriginatingAddress
-                    smsBody += smsMessage.messageBody
-                    smsTimestamp = smsMessage.timestampMillis
-                    Log.d("Receiver", "SMS Received!! \n $smsMessage")
-                }
-            } else {
-                val smsBundle = intent.extras
-                if (smsBundle != null) {
-                    val pdus = smsBundle.get("pdus") as Array<*>
-                    if (pdus == null) {
-                        // Display some error to the user
-                        Log.e(TAG, "SmsBundle had no pdus key")
-                        return
-                    }
-                    val messages = arrayOfNulls<SmsMessage>(pdus.size)
-                    for (i in messages.indices) {
-                        messages[i] = SmsMessage.createFromPdu(pdus[i] as ByteArray)
-                        smsBody += messages[i]!!.messageBody
-                    }
-                    smsSender = messages[0]!!.originatingAddress
-                    smsTimestamp = messages[0]!!.timestampMillis
-                }
-            }
-
-            if (smsListener != null) {
-                Log.d("Receiver", smsBody)
-                smsListener!!.onTextReceived(
-                    SMS(
-                        smsSender!!,
-                        smsBody,
-                        smsTimestamp
-                    )
-                )
-            }
-
-            startApiWork()
-            initNotification()
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        for (smsMessage in Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
+          smsSender = smsMessage.displayOriginatingAddress
+          smsBody += smsMessage.messageBody
+          smsTimestamp = smsMessage.timestampMillis
+          Log.d("Receiver", "SMS Received!! \n $smsMessage")
         }
-    }
-
-    private fun startApiWork() {
-        //intent service or workmanager
-        val user = User("Ralph", "Manzz", "Davs", "1234", "uy", "123")
-        val data = Gson().toJson(user)
-
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val apiWorker = OneTimeWorkRequestBuilder<ApiWorker>()
-            .setConstraints(constraints)
-            .setInputData(workDataOf(WORKER_INPUT_DATA to data))
-            .build()
-
-        WorkManager.getInstance().enqueue(apiWorker)
-    }
-
-    internal fun setListener(smsListener: SmsListener?) {
-        this.smsListener = smsListener
-    }
-
-    private fun initNotification() {
-        notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        createNotificationChannel()
-
-        val notification = NotificationCompat.Builder(context, DEFAULT_CHANNEL_ID)
-            .setContentTitle("Test")
-            .setContentText("This is a test notification")
-            .setSmallIcon(android.R.drawable.ic_menu_view)
-            .build()
-
-        //Send the notification.
-        notificationManager!!.notify(1, notification)
-    }
-
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //Create channel only if it is not already created
-            if (notificationManager?.getNotificationChannel(DEFAULT_CHANNEL_ID) == null) {
-                notificationManager?.createNotificationChannel(
-                    NotificationChannel(
-                        DEFAULT_CHANNEL_ID, DEFAULT_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT
-                    )
-                )
-            }
+      } else {
+        val smsBundle = intent.extras
+        if (smsBundle != null) {
+          val pdus = smsBundle.get("pdus") as Array<*>
+          if (pdus == null) {
+            // Display some error to the user
+            Log.e(TAG, "SmsBundle had no pdus key")
+            return
+          }
+          val messages = arrayOfNulls<SmsMessage>(pdus.size)
+          for (i in messages.indices) {
+            messages[i] = SmsMessage.createFromPdu(pdus[i] as ByteArray)
+            smsBody += messages[i]!!.messageBody
+          }
+          smsSender = messages[0]!!.originatingAddress
+          smsTimestamp = messages[0]!!.timestampMillis
         }
-    }
+      }
 
-    internal interface SmsListener {
-        fun onTextReceived(sms: SMS)
+      if (smsListener != null) {
+        Log.d("Receiver", smsBody)
+        smsListener!!.onTextReceived(
+          SMS(
+            smsSender!!,
+            smsBody,
+            smsTimestamp
+          )
+        )
+      }
+
+      startApiWork()
+      initNotification()
     }
+  }
+
+  private fun startApiWork() {
+    //intent service or workmanager
+    val user = User("Ralph", "Manzz", "Davs", "1234", "uy", "123")
+    val data = Gson().toJson(user)
+
+    val constraints = Constraints.Builder()
+      .setRequiredNetworkType(NetworkType.CONNECTED)
+      .build()
+
+    val apiWorker = OneTimeWorkRequestBuilder<ApiWorker>()
+      .setConstraints(constraints)
+      .setInputData(workDataOf(WORKER_INPUT_DATA to data))
+      .build()
+
+    WorkManager.getInstance().enqueue(apiWorker)
+  }
+
+  internal fun setListener(smsListener: SmsListener?) {
+    this.smsListener = smsListener
+  }
+
+  private fun initNotification() {
+    notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+    createNotificationChannel()
+
+    val notification = NotificationCompat.Builder(context, DEFAULT_CHANNEL_ID)
+      .setContentTitle("Test")
+      .setContentText("This is a test notification")
+      .setSmallIcon(android.R.drawable.ic_menu_view)
+      .build()
+
+    //Send the notification.
+    notificationManager!!.notify(1, notification)
+  }
+
+  private fun createNotificationChannel() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      //Create channel only if it is not already created
+      if (notificationManager?.getNotificationChannel(DEFAULT_CHANNEL_ID) == null) {
+        notificationManager?.createNotificationChannel(
+          NotificationChannel(
+            DEFAULT_CHANNEL_ID, DEFAULT_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT
+          )
+        )
+      }
+    }
+  }
+
+  internal interface SmsListener {
+    fun onTextReceived(sms: SMS)
+  }
 }

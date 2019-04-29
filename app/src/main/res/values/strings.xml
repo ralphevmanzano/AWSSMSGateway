@@ -1,6 +1,11 @@
 <resources>
-    <string name="app_name">AWS SMS Gateway</string>
-    <string name="default_notification_channel_id">FCM Notification</string>
-    <string name="fcm_message">Message from FCM</string>
-    <string name="msg_token_fmt">FCM token: %s</string>
+  <string name="app_name">AWS SMS Gateway</string>
+  <string name="default_notification_channel_id">FCM Notification</string>
+  <string name="fcm_message">Message from FCM</string>
+  <string name="msg_token_fmt">FCM token: %s</string>
+  <string name="network">Network</string>
+  <string name="server_ip">pref_server_ip</string>
+  <string name="current_address_of_the_server">Current IP Address of the Server</string>
+  <string name="server_ip_address">Server IP Address</string>
+
 </resources>

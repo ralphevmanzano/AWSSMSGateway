@@ -12,16 +12,16 @@ import io.reactivex.Single
 
 class ApiWorker(ctx: Context, params: WorkerParameters) : RxWorker(ctx, params) {
 
-    private val apiService = ApiService.create()
+  private val apiService = ApiService.create()
 
-    override fun createWork(): Single<Result> {
-        val data = inputData.getString(WORKER_INPUT_DATA)
-        val gson = Gson()
-        val user = gson.fromJson(data, User::class.java)
-        return apiService.sendToServer(user)
-            .doOnSuccess { Log.d("ApiWorker", "response $it")}
-            .map { Result.success() }
-            .doOnError { Log.e("ApiWorker", "error ${it.localizedMessage}")}
-            .onErrorReturn { Result.failure() }
-    }
+  override fun createWork(): Single<Result> {
+    val data = inputData.getString(WORKER_INPUT_DATA)
+    val gson = Gson()
+    val user = gson.fromJson(data, User::class.java)
+    return apiService.sendToServer(user)
+      .doOnSuccess { Log.d("ApiWorker", "response $it") }
+      .map { Result.success() }
+      .doOnError { Log.e("ApiWorker", "error ${it.localizedMessage}") }
+      .onErrorReturn { Result.failure() }
+  }
 }
