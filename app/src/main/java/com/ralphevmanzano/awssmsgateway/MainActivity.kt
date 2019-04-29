@@ -11,10 +11,18 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.work.*
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
+import com.google.gson.Gson
+import com.ralphevmanzano.awssmsgateway.models.SMS
+import com.ralphevmanzano.awssmsgateway.models.User
+import com.ralphevmanzano.awssmsgateway.utils.WORKER_INPUT_DATA
+import com.ralphevmanzano.awssmsgateway.workers.ApiWorker
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -34,9 +42,28 @@ class MainActivity : AppCompatActivity() {
         rxPermissions.setLogging(true)
         smsBroadcastReceiver = SmsBroadcastReceiver()
 
+        initUI()
 
         requestReadAndSendSmsPermission()
         initFCM()
+    }
+
+    private fun initUI() {
+        button.setOnClickListener {
+            val user = User("Ralph", "Manzz", "Davs", "1234", "uy", "123")
+            val data = Gson().toJson(user)
+
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+
+            val apiWorker = OneTimeWorkRequestBuilder<ApiWorker>()
+                .setConstraints(constraints)
+                .setInputData(workDataOf(WORKER_INPUT_DATA to data))
+                .build()
+
+            WorkManager.getInstance().enqueue(apiWorker)
+        }
     }
 
     private fun initFCM() {
@@ -61,17 +88,6 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         smsBroadcastReceiver.setListener(null)
     }
-
-    /**
-     * Check if we have SMS permission
-     */
-    fun isSmsPermissionGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.READ_SMS
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
 
     /**
      * Request runtime SMS permission

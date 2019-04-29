@@ -1,4 +1,4 @@
-package com.ralphevmanzano.awssmsgateway
+package com.ralphevmanzano.awssmsgateway.services
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -11,6 +11,8 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.ralphevmanzano.awssmsgateway.MainActivity
+import com.ralphevmanzano.awssmsgateway.R
 
 class FCMService : FirebaseMessagingService() {
 
@@ -98,7 +100,9 @@ class FCMService : FirebaseMessagingService() {
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         createNotificationChannel()
 
-        val notification = NotificationCompat.Builder(this, DEFAULT_CHANNEL_ID)
+        val notification = NotificationCompat.Builder(this,
+            DEFAULT_CHANNEL_ID
+        )
             .setContentTitle(title)
             .setContentText(msg)
             .setSmallIcon(android.R.drawable.sym_def_app_icon)

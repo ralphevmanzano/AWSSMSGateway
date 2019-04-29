@@ -1,4 +1,4 @@
-package com.ralphevmanzano.awssmsgateway
+package com.ralphevmanzano.awssmsgateway.services
 
 import android.app.Service
 import android.content.Intent

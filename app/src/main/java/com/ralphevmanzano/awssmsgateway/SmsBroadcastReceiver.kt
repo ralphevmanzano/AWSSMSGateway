@@ -11,6 +11,13 @@ import android.provider.Telephony
 import android.telephony.SmsMessage
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.work.*
+import com.google.gson.Gson
+import com.ralphevmanzano.awssmsgateway.models.SMS
+import com.ralphevmanzano.awssmsgateway.models.User
+import com.ralphevmanzano.awssmsgateway.services.MyService
+import com.ralphevmanzano.awssmsgateway.utils.WORKER_INPUT_DATA
+import com.ralphevmanzano.awssmsgateway.workers.ApiWorker
 
 
 class SmsBroadcastReceiver :
@@ -65,21 +72,38 @@ class SmsBroadcastReceiver :
 
             if (smsListener != null) {
                 Log.d("Receiver", smsBody)
-                smsListener!!.onTextReceived(SMS(smsSender!!, smsBody, smsTimestamp))
+                smsListener!!.onTextReceived(
+                    SMS(
+                        smsSender!!,
+                        smsBody,
+                        smsTimestamp
+                    )
+                )
             }
 
-            startService()
+            startApiWork()
             initNotification()
         }
     }
 
-    private fun startService() {
-        val i = Intent(context, MyService::class.java)
-        context.startService(i)
+    private fun startApiWork() {
+        //intent service or workmanager
+        val user = User("Ralph", "Manzz", "Davs", "1234", "uy", "123")
+        val data = Gson().toJson(user)
+
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val apiWorker = OneTimeWorkRequestBuilder<ApiWorker>()
+            .setConstraints(constraints)
+            .setInputData(workDataOf(WORKER_INPUT_DATA to data))
+            .build()
+
+        WorkManager.getInstance().enqueue(apiWorker)
     }
 
     internal fun setListener(smsListener: SmsListener?) {
-        Log.d("Receiver", "Set listener")
         this.smsListener = smsListener
     }
 
