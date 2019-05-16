@@ -12,9 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ralphevmanzano.awssmsgateway.models.SMS
-import com.ralphevmanzano.awssmsgateway.utils.PREF_SERVER_IP
-import com.ralphevmanzano.awssmsgateway.utils.PreferenceHelper
-import com.ralphevmanzano.awssmsgateway.utils.PreferenceHelper.set
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.disposables.Disposable
 
@@ -26,7 +23,7 @@ class MainActivity : AppCompatActivity() {
   private lateinit var smsBroadcastReceiver: SmsBroadcastReceiver
 
   companion object {
-    val TAG = "MainActivity";
+    val TAG = "MainActivity"
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,11 +32,6 @@ class MainActivity : AppCompatActivity() {
     rxPermissions = RxPermissions(this)
     rxPermissions.setLogging(true)
     smsBroadcastReceiver = SmsBroadcastReceiver()
-
-    val pref = PreferenceHelper.defaultPrefs(this)
-    if (pref.getString(PREF_SERVER_IP, null) == null) {
-      pref[PREF_SERVER_IP] = "http://192.168.1.19/"
-    }
 
     requestReadAndSendSmsPermission()
     initFCM()

@@ -3,11 +3,11 @@ package com.ralphevmanzano.awssmsgateway
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceGroup
+import me.jessyan.retrofiturlmanager.RetrofitUrlManager
 
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -21,7 +21,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
   override fun onStop() {
     super.onStop()
     preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(null)
-
   }
 
   override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -29,8 +28,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
   }
 
   private fun updatePreference(preference: Preference?) {
-    if (preference is EditTextPreference)
+    if (preference is EditTextPreference) {
       preference.summary = preference.text
+    }
   }
 
   private fun initSummary(p: Preference) {

@@ -26,9 +26,9 @@ interface ApiService {
       }
 
       val okHttpClient = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
+        .connectTimeout(5, TimeUnit.SECONDS)
+        .writeTimeout(5, TimeUnit.SECONDS)
+        .readTimeout(5, TimeUnit.SECONDS)
         .addInterceptor(loggingInterceptor)
 
       val retrofit = Retrofit.Builder()
@@ -43,6 +43,6 @@ interface ApiService {
   }
 
   @POST
-  fun sendToServer(@Url url: String, @Body user: User): Single<ApiResponse>
+  fun sendToServer(@Url url: String?, @Body user: User): Single<ApiResponse>
 
 }
