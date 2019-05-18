@@ -8,6 +8,7 @@ import androidx.work.WorkerParameters
 import com.google.gson.Gson
 import com.ralphevmanzano.awssmsgateway.ApiService
 import com.ralphevmanzano.awssmsgateway.R
+import com.ralphevmanzano.awssmsgateway.models.SmsModel
 import com.ralphevmanzano.awssmsgateway.models.User
 import com.ralphevmanzano.awssmsgateway.utils.WORKER_INPUT_DATA
 import io.reactivex.Single
@@ -21,10 +22,11 @@ class ApiWorker(ctx: Context, params: WorkerParameters) : RxWorker(ctx, params) 
   override fun createWork(): Single<Result> {
     val data = inputData.getString(WORKER_INPUT_DATA)
     val gson = Gson()
-    val user = gson.fromJson(data, User::class.java)
+    val sms = gson.fromJson(data, SmsModel::class.java)
     val ip = pref.getString(ipKey, "192.168.1.15")
 
-    return apiService.sendToServer("http://$ip/", user)
+    return apiService.sendToServer("http://$ip/", sms)
+      .retry(3)
       .doOnSuccess { Log.d("ApiWorker", "response $it") }
       .map { Result.success() }
       .doOnError { Log.e("ApiWorker", "error ${it.localizedMessage}") }

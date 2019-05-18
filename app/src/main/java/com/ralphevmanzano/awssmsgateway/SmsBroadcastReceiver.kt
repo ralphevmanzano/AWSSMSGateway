@@ -13,11 +13,11 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.*
 import com.google.gson.Gson
-import com.ralphevmanzano.awssmsgateway.models.SMS
-import com.ralphevmanzano.awssmsgateway.models.User
-import com.ralphevmanzano.awssmsgateway.services.MyService
+import com.ralphevmanzano.awssmsgateway.models.SmsModel
 import com.ralphevmanzano.awssmsgateway.utils.WORKER_INPUT_DATA
 import com.ralphevmanzano.awssmsgateway.workers.ApiWorker
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class SmsBroadcastReceiver : BroadcastReceiver() {
@@ -28,7 +28,7 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
 
 
   companion object {
-    const val DEFAULT_CHANNEL_NAME = "SMS Notifications"
+    const val DEFAULT_CHANNEL_NAME = "SmsModel Notifications"
     const val DEFAULT_CHANNEL_ID = "sms_notification_id"
   }
 
@@ -40,14 +40,13 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
     if (intent.action == Telephony.Sms.Intents.SMS_RECEIVED_ACTION) {
       var smsSender: String? = null
       var smsBody = ""
-      var smsTimestamp: Long = 0
+      var smsTimestamp: Long? = null
 
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
         for (smsMessage in Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
           smsSender = smsMessage.displayOriginatingAddress
           smsBody += smsMessage.messageBody
           smsTimestamp = smsMessage.timestampMillis
-          Log.d("Receiver", "SMS Received!! \n $smsMessage")
         }
       } else {
         val smsBundle = intent.extras
@@ -63,42 +62,56 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
             messages[i] = SmsMessage.createFromPdu(pdus[i] as ByteArray)
             smsBody += messages[i]!!.messageBody
           }
-          smsSender = messages[0]!!.originatingAddress
+          smsSender = messages[0]?.originatingAddress!!
           smsTimestamp = messages[0]!!.timestampMillis
         }
       }
 
-      if (smsListener != null) {
-        Log.d("Receiver", smsBody)
-        smsListener!!.onTextReceived(
-          SMS(
-            smsSender!!,
-            smsBody,
-            smsTimestamp
-          )
-        )
+      val sms = safeLet(smsSender, smsBody, smsTimestamp?.let { millisToDate(it) }) { sender, body, date ->
+        SmsModel(sender, body, date)
       }
 
-      startApiWork()
-      initNotification()
+      Log.d("Receiver", "SmsModel Received!! \n ${sms?.number} \t ${sms?.message} \t ${sms?.timestamp}")
+
+      sms?.let {
+        if (it.message.startsWith("(", true) &&
+            it.message.endsWith(")", true)) {
+          if (smsListener != null) {
+            Log.d("Receiver", smsBody)
+            smsListener!!.onTextReceived(sms)
+          }
+
+          startApiWork(sms)
+          initNotification()
+        }
+      }
     }
   }
 
-  private fun startApiWork() {
+  private fun startApiWork(sms: SmsModel?) {
     //intent service or workmanager
-    val user = User("Ralph", "Manzz", "Davs", "1234", "uy", "123")
-    val data = Gson().toJson(user)
+    val data = Gson().toJson(sms)
 
     val constraints = Constraints.Builder()
       .setRequiredNetworkType(NetworkType.CONNECTED)
       .build()
 
-    val apiWorker = OneTimeWorkRequestBuilder<ApiWorker>()
+    val apiWorkerRequest = OneTimeWorkRequestBuilder<ApiWorker>()
       .setConstraints(constraints)
       .setInputData(workDataOf(WORKER_INPUT_DATA to data))
+      .setBackoffCriteria(BackoffPolicy.LINEAR, WorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.SECONDS)
       .build()
 
-    WorkManager.getInstance().enqueue(apiWorker)
+    WorkManager.getInstance().enqueue(apiWorkerRequest)
+  }
+
+  private fun millisToDate(currentTime: Long): String {
+    val finalDate: String
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = currentTime
+    val date = calendar.time
+    finalDate = date.toString()
+    return finalDate
   }
 
   internal fun setListener(smsListener: SmsListener?) {
@@ -132,7 +145,11 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
     }
   }
 
+  fun <T1: Any, T2: Any, T3: Any, R: Any> safeLet(p1: T1?, p2: T2?, p3: T3?, block: (T1, T2, T3)->R?): R? {
+    return if (p1 != null && p2 != null && p3 != null) block(p1, p2, p3) else null
+  }
+
   internal interface SmsListener {
-    fun onTextReceived(sms: SMS)
+    fun onTextReceived(sms: SmsModel?)
   }
 }

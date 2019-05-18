@@ -11,7 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
-import com.ralphevmanzano.awssmsgateway.models.SMS
+import com.ralphevmanzano.awssmsgateway.models.SmsModel
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.disposables.Disposable
 
@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
   private lateinit var smsBroadcastReceiver: SmsBroadcastReceiver
 
   companion object {
-    val TAG = "MainActivity"
+    const val TAG = "MainActivity"
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
   }
 
   /**
-   * Request runtime SMS permission
+   * Request runtime SmsModel permission
    */
   private fun requestReadAndSendSmsPermission() {
     disposable = rxPermissions
@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
 
   private fun setBroadcastReceiverListener() {
     smsBroadcastReceiver.setListener(object : SmsBroadcastReceiver.SmsListener {
-      override fun onTextReceived(sms: SMS) {
+      override fun onTextReceived(sms: SmsModel?) {
         Log.d("MainActivity", sms.toString())
       }
     })

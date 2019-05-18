@@ -11,8 +11,13 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.google.gson.Gson
 import com.ralphevmanzano.awssmsgateway.MainActivity
-import com.ralphevmanzano.awssmsgateway.R
+import com.ralphevmanzano.awssmsgateway.models.FcmResponse
+import com.ralphevmanzano.awssmsgateway.models.SmsEntity
+import org.json.JSONObject
+
+
 
 class FCMService : FirebaseMessagingService() {
 
@@ -28,9 +33,23 @@ class FCMService : FirebaseMessagingService() {
     // Check if message contains a data payload.
 
     msg?.data?.isNotEmpty()?.let {
-      Log.d("FCMService", "Message data payload: " + msg.data)
-      showNotification(msg.data?.get("title"), msg.data?.get("body"))
+      val jsonStr = JSONObject(msg.data).toString()
+      Log.d("Sms", "new JSONObject(remoteMessage.getData()) : $jsonStr")
 
+      val finalJson = jsonStr.replace("\\\\", "")
+        .replace("\"[", "[")
+        .replace("]\"", "]")
+        .replace("\\\"", "\"")
+
+      Log.d("Sms", "new JSONObject(remoteMessage.getData()) : $finalJson")
+
+
+      val fcmResponse = Gson().fromJson(finalJson, FcmResponse::class.java)
+
+      showNotification(fcmResponse.title, fcmResponse.body)
+      for (sms in fcmResponse.sms) {
+        Log.d("Sms", "Sms ${sms.num} ${sms.message}")
+      }
 //            if (/* Check if data needs to be processed by long running job */ true) {
 //                // For long-running tasks (10 seconds or more) use WorkManager.
 //                scheduleJob()
@@ -39,12 +58,6 @@ class FCMService : FirebaseMessagingService() {
 //                handleNow()
 //            }
     }
-
-    // Check if message contains a notification payload.
-//        msg?.notification?.let {
-//            Log.d("FCMService", "Message Notification Body: ${it.body}")
-//            showNotification(msg.notification?.title, msg.notification?.body)
-//        }
   }
 
   /**
@@ -55,44 +68,6 @@ class FCMService : FirebaseMessagingService() {
   override fun onNewToken(p0: String?) {
     super.onNewToken(p0)
     // call to backend
-  }
-
-  /**
-   * Create and show a simple notification containing the received FCM message.
-   *
-   * @param messageBody FCM message body received.
-   */
-  private fun sendNotification(title: String?, messageBody: String?) {
-    val intent = Intent(this, MainActivity::class.java)
-    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-    val pendingIntent = PendingIntent.getActivity(
-      this, 0 /* Request code */, intent,
-      PendingIntent.FLAG_ONE_SHOT
-    )
-
-    val channelId = getString(R.string.default_notification_channel_id)
-    val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-    val notificationBuilder = NotificationCompat.Builder(this, channelId)
-      .setSmallIcon(R.drawable.ic_launcher_background)
-      .setContentTitle(title)
-      .setContentText(messageBody)
-      .setAutoCancel(true)
-      .setSound(defaultSoundUri)
-      .setContentIntent(pendingIntent)
-
-    val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-    // Since android Oreo notification channel is needed.
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      val channel = NotificationChannel(
-        channelId,
-        "Channel human readable title",
-        NotificationManager.IMPORTANCE_DEFAULT
-      )
-      notificationManager.createNotificationChannel(channel)
-    }
-
-    notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
   }
 
   private fun showNotification(title: String?, msg: String?) {
@@ -106,10 +81,7 @@ class FCMService : FirebaseMessagingService() {
     notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     createNotificationChannel()
 
-    val notification = NotificationCompat.Builder(
-      this,
-      DEFAULT_CHANNEL_ID
-    )
+    val notification = NotificationCompat.Builder(this, DEFAULT_CHANNEL_ID)
       .setContentTitle(title)
       .setContentText(msg)
       .setSmallIcon(android.R.drawable.sym_def_app_icon)

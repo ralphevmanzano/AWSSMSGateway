@@ -2,6 +2,7 @@ package com.ralphevmanzano.awssmsgateway
 
 import android.util.Log
 import com.ralphevmanzano.awssmsgateway.models.ApiResponse
+import com.ralphevmanzano.awssmsgateway.models.SmsModel
 import com.ralphevmanzano.awssmsgateway.models.User
 import io.reactivex.Single
 import okhttp3.OkHttpClient
@@ -43,6 +44,6 @@ interface ApiService {
   }
 
   @POST
-  fun sendToServer(@Url url: String?, @Body user: User): Single<ApiResponse>
+  fun sendToServer(@Url url: String?, @Body sms: SmsModel): Single<ApiResponse>
 
 }
