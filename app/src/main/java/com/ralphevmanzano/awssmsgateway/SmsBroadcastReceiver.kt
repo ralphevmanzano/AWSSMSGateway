@@ -14,7 +14,7 @@ import androidx.core.app.NotificationCompat
 import androidx.work.*
 import com.google.gson.Gson
 import com.ralphevmanzano.awssmsgateway.models.SmsModel
-import com.ralphevmanzano.awssmsgateway.utils.WORKER_INPUT_DATA
+import com.ralphevmanzano.awssmsgateway.utils.API_WORKER_INPUT_KEY
 import com.ralphevmanzano.awssmsgateway.workers.ApiWorker
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -71,8 +71,6 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
         SmsModel(sender, body, date)
       }
 
-      Log.d("Receiver", "SmsModel Received!! \n ${sms?.number} \t ${sms?.message} \t ${sms?.timestamp}")
-
       sms?.let {
         if (it.message.startsWith("(", true) &&
             it.message.endsWith(")", true)) {
@@ -98,8 +96,7 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
 
     val apiWorkerRequest = OneTimeWorkRequestBuilder<ApiWorker>()
       .setConstraints(constraints)
-      .setInputData(workDataOf(WORKER_INPUT_DATA to data))
-      .setBackoffCriteria(BackoffPolicy.LINEAR, WorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.SECONDS)
+      .setInputData(workDataOf(API_WORKER_INPUT_KEY to data))
       .build()
 
     WorkManager.getInstance().enqueue(apiWorkerRequest)

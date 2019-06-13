@@ -68,7 +68,8 @@ class MainActivity : AppCompatActivity() {
       .requestEachCombined(
         Manifest.permission.RECEIVE_SMS,
         Manifest.permission.READ_SMS,
-        Manifest.permission.SEND_SMS
+        Manifest.permission.SEND_SMS,
+        Manifest.permission.READ_PHONE_STATE
       )
       .subscribe { perm ->
         when {

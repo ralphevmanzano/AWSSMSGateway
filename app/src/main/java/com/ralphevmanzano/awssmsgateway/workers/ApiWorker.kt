@@ -9,8 +9,7 @@ import com.google.gson.Gson
 import com.ralphevmanzano.awssmsgateway.ApiService
 import com.ralphevmanzano.awssmsgateway.R
 import com.ralphevmanzano.awssmsgateway.models.SmsModel
-import com.ralphevmanzano.awssmsgateway.models.User
-import com.ralphevmanzano.awssmsgateway.utils.WORKER_INPUT_DATA
+import com.ralphevmanzano.awssmsgateway.utils.API_WORKER_INPUT_KEY
 import io.reactivex.Single
 
 class ApiWorker(ctx: Context, params: WorkerParameters) : RxWorker(ctx, params) {
@@ -20,9 +19,8 @@ class ApiWorker(ctx: Context, params: WorkerParameters) : RxWorker(ctx, params) 
   private val ipKey = ctx.getString(R.string.server_ip)
 
   override fun createWork(): Single<Result> {
-    val data = inputData.getString(WORKER_INPUT_DATA)
-    val gson = Gson()
-    val sms = gson.fromJson(data, SmsModel::class.java)
+    val data = inputData.getString(API_WORKER_INPUT_KEY)
+    val sms = Gson().fromJson(data, SmsModel::class.java)
     val ip = pref.getString(ipKey, "192.168.1.15")
 
     return apiService.sendToServer("http://$ip/", sms)

@@ -9,12 +9,18 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.ralphevmanzano.awssmsgateway.MainActivity
 import com.ralphevmanzano.awssmsgateway.models.FcmResponse
 import com.ralphevmanzano.awssmsgateway.models.SmsEntity
+import com.ralphevmanzano.awssmsgateway.utils.SMS_WORKER_INPUT_KEY
+import com.ralphevmanzano.awssmsgateway.workers.SmsWorker
 import org.json.JSONObject
 
 
@@ -43,31 +49,26 @@ class FCMService : FirebaseMessagingService() {
 
       Log.d("Sms", "new JSONObject(remoteMessage.getData()) : $finalJson")
 
-
       val fcmResponse = Gson().fromJson(finalJson, FcmResponse::class.java)
 
       showNotification(fcmResponse.title, fcmResponse.body)
+
       for (sms in fcmResponse.sms) {
         Log.d("Sms", "Sms ${sms.num} ${sms.message}")
       }
-//            if (/* Check if data needs to be processed by long running job */ true) {
-//                // For long-running tasks (10 seconds or more) use WorkManager.
-//                scheduleJob()
-//            } else {
-//                // Handle message within 10 seconds
-//                handleNow()
-//            }
+
+      startSmsWork(fcmResponse.sms)
     }
   }
 
-  /**
-   * Called if InstanceID token is updated. This may occur if the security of
-   * the previous token had been compromised. Note that this is called when the InstanceID token
-   * is initially generated so this is where you would retrieve the token.
-   */
-  override fun onNewToken(p0: String?) {
-    super.onNewToken(p0)
-    // call to backend
+  private fun startSmsWork(sms: Array<SmsEntity>) {
+    val data = Gson().toJson(sms)
+
+    val smsWorkerRequest = OneTimeWorkRequestBuilder<SmsWorker>()
+      .setInputData(workDataOf(SMS_WORKER_INPUT_KEY to data))
+      .build()
+
+    WorkManager.getInstance().enqueue(smsWorkerRequest)
   }
 
   private fun showNotification(title: String?, msg: String?) {

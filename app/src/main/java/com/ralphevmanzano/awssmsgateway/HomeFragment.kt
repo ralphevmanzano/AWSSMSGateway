@@ -8,7 +8,7 @@ import androidx.navigation.Navigation
 import androidx.work.*
 import com.google.gson.Gson
 import com.ralphevmanzano.awssmsgateway.models.User
-import com.ralphevmanzano.awssmsgateway.utils.WORKER_INPUT_DATA
+import com.ralphevmanzano.awssmsgateway.utils.API_WORKER_INPUT_KEY
 import com.ralphevmanzano.awssmsgateway.workers.ApiWorker
 import kotlinx.android.synthetic.main.fragment_home.*
 
@@ -42,7 +42,7 @@ class HomeFragment : Fragment() {
 
       val apiWorker = OneTimeWorkRequestBuilder<ApiWorker>()
         .setConstraints(constraints)
-        .setInputData(workDataOf(WORKER_INPUT_DATA to data))
+        .setInputData(workDataOf(API_WORKER_INPUT_KEY to data))
         .build()
 
       WorkManager.getInstance().enqueue(apiWorker)

@@ -13,7 +13,10 @@ const val CHANNEL_ID = "VERBOSE_NOTIFICATION"
 const val NOTIFICATION_ID = 1
 
 // Other keys
-const val WORKER_INPUT_DATA = "WORKER_INPUT_DATA"
+const val API_WORKER_INPUT_KEY = "API_WORKER_INPUT_KEY"
 
 // Preference keys
 const val PREF_SERVER_IP = "PREF_SERVER_IP"
+
+// Input Data Key
+const val SMS_WORKER_INPUT_KEY = "SMS_WORKER_INPUT_KEY"
