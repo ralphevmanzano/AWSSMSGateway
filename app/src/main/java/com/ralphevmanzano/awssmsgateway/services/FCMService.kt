@@ -17,10 +17,13 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.ralphevmanzano.awssmsgateway.MainActivity
+import com.ralphevmanzano.awssmsgateway.db.SmsDatabase
 import com.ralphevmanzano.awssmsgateway.models.FcmResponse
 import com.ralphevmanzano.awssmsgateway.models.SmsEntity
 import com.ralphevmanzano.awssmsgateway.utils.SMS_WORKER_INPUT_KEY
 import com.ralphevmanzano.awssmsgateway.workers.SmsWorker
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
 
 
@@ -28,10 +31,16 @@ import org.json.JSONObject
 class FCMService : FirebaseMessagingService() {
 
   private var notificationManager: NotificationManager? = null
+  private val disposable = CompositeDisposable()
 
   companion object {
     const val DEFAULT_CHANNEL_NAME = "FCM Notifications"
     const val DEFAULT_CHANNEL_ID = "fcm_notification_id"
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    disposable.clear()
   }
 
   override fun onMessageReceived(msg: RemoteMessage?) {
@@ -56,9 +65,20 @@ class FCMService : FirebaseMessagingService() {
       for (sms in fcmResponse.sms) {
         Log.d("Sms", "Sms ${sms.num} ${sms.message}")
       }
-
+      saveMessagesToDb(fcmResponse.sms)
       startSmsWork(fcmResponse.sms)
     }
+  }
+
+  private fun saveMessagesToDb(sms: Array<SmsEntity>) {
+    val dao = SmsDatabase.getInstance(applicationContext).smsDao()
+    disposable.add(dao.insertMessages(sms.toList())
+      .subscribeOn(Schedulers.io())
+      .subscribe({
+        Log.d("Room", "Successfully inserted!")
+      }, { error ->
+        Log.e("Room", "Error inserting messages: $error")
+      }))
   }
 
   private fun startSmsWork(sms: Array<SmsEntity>) {

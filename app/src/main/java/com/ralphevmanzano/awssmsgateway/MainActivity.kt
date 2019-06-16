@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import com.ralphevmanzano.awssmsgateway.models.SmsModel
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.disposables.Disposable
@@ -38,21 +39,13 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun initFCM() {
-    FirebaseInstanceId.getInstance().instanceId
-      .addOnCompleteListener(OnCompleteListener { task ->
-        if (!task.isSuccessful) {
-          Log.w(TAG, "getInstanceId failed", task.exception)
-          return@OnCompleteListener
-        }
-
-        // Get new Instance ID token
-        val token = task.result?.token
-
-        // Log and toast
-        val msg = getString(R.string.msg_token_fmt, token)
-        Log.d(TAG, msg)
+    FirebaseMessaging.getInstance().subscribeToTopic("aws")
+      .addOnCompleteListener { task ->
+        var msg = "Subscribed to Firebase Topic: AWS"
+        if (!task.isSuccessful)
+          msg = "Failed to subscribe"
         Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-      })
+      }
   }
 
   override fun onDestroy() {
@@ -91,11 +84,11 @@ class MainActivity : AppCompatActivity() {
 
   private fun showPermissionExplanationDialog() {
     val builder = AlertDialog.Builder(this)
-    builder.setMessage("These permissions are required to make use of this application. Please manually grant the permission in the settings.")
-    builder.setPositiveButton("Settings") { _, _ ->
+    builder.setMessage(getString(R.string.permission_explanation))
+    builder.setPositiveButton(getString(R.string.settings)) { _, _ ->
       goToSettings()
     }
-    builder.setNegativeButton("Cancel") { _, _ ->
+    builder.setNegativeButton(getString(R.string.cancel)) { _, _ ->
       finish()
     }
 

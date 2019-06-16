@@ -18,6 +18,7 @@ class SmsWorker(ctx: Context, workerParams: WorkerParameters) : Worker(ctx, work
       for (msg in messages) {
         sendSms(msg)
       }
+
       Result.success()
     } catch (e: Exception) {
       Log.e("Sms", e.localizedMessage)
@@ -26,7 +27,11 @@ class SmsWorker(ctx: Context, workerParams: WorkerParameters) : Worker(ctx, work
   }
 
   private fun sendSms(msg: SmsEntity) {
-    val smsManager = SmsManager.getDefault()
-    smsManager.sendTextMessage(msg.num, null, msg.message, null, null)
+    try {
+      val smsManager = SmsManager.getDefault()
+      smsManager.sendTextMessage(msg.num, null, msg.message, null, null)
+    } catch (e: Exception) {
+      Log.e("Sms", e.localizedMessage)
+    }
   }
 }

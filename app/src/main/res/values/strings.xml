@@ -7,5 +7,10 @@
   <string name="server_ip">pref_server_ip</string>
   <string name="current_address_of_the_server">Current IP Address of the Server</string>
   <string name="server_ip_address">Server IP Address</string>
+  <string name="permission_explanation">These permissions are required to make use of this application. Please manually
+    grant the permission in the settings.
+  </string>
+  <string name="settings">Settings</string>
+  <string name="cancel">Cancel</string>
 
 </resources>
