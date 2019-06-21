@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.ralphevmanzano.awssmsgateway.models.SmsEntity
 
-@Database(entities = arrayOf(SmsEntity::class), version = 1)
+@Database(entities = [SmsEntity::class], version = 1)
 abstract class SmsDatabase: RoomDatabase() {
 
   abstract fun smsDao(): SmsDao

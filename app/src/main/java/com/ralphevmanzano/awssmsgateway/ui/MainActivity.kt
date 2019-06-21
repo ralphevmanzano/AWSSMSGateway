@@ -1,7 +1,10 @@
-package com.ralphevmanzano.awssmsgateway
+package com.ralphevmanzano.awssmsgateway.ui
 
 import android.Manifest
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -9,10 +12,14 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.iid.FirebaseInstanceId
+import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessaging
+import com.ralphevmanzano.awssmsgateway.R
 import com.ralphevmanzano.awssmsgateway.models.SmsModel
+import com.ralphevmanzano.awssmsgateway.receivers.SmsReceiveBroadcastReceiver
+import com.ralphevmanzano.awssmsgateway.services.AwsService
+import com.ralphevmanzano.awssmsgateway.utils.EXIT_APP_ACTION
+import com.ralphevmanzano.awssmsgateway.utils.START_SERVICE
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.disposables.Disposable
 
@@ -21,7 +28,14 @@ class MainActivity : AppCompatActivity() {
 
   private lateinit var rxPermissions: RxPermissions
   private lateinit var disposable: Disposable
-  private lateinit var smsBroadcastReceiver: SmsBroadcastReceiver
+  private lateinit var smsReceiveBroadcastReceiver: SmsReceiveBroadcastReceiver
+  private val exitBroadcastReceiver = object : BroadcastReceiver() {
+    override fun onReceive(context: Context?, intent: Intent?) {
+      val stopServiceIntent = Intent(this@MainActivity, AwsService::class.java)
+      stopService(stopServiceIntent)
+      finish()
+    }
+  }
 
   companion object {
     const val TAG = "MainActivity"
@@ -32,10 +46,18 @@ class MainActivity : AppCompatActivity() {
     setContentView(R.layout.activity_main)
     rxPermissions = RxPermissions(this)
     rxPermissions.setLogging(true)
-    smsBroadcastReceiver = SmsBroadcastReceiver()
+    smsReceiveBroadcastReceiver = SmsReceiveBroadcastReceiver()
+    registerReceiver(exitBroadcastReceiver, IntentFilter(EXIT_APP_ACTION))
 
     requestReadAndSendSmsPermission()
     initFCM()
+    initAwsService()
+  }
+
+  private fun initAwsService() {
+    val serviceIntent = Intent(this, AwsService::class.java)
+    serviceIntent.action = START_SERVICE
+    ContextCompat.startForegroundService(this, serviceIntent)
   }
 
   private fun initFCM() {
@@ -49,8 +71,9 @@ class MainActivity : AppCompatActivity() {
   }
 
   override fun onDestroy() {
+    unregisterReceiver(exitBroadcastReceiver)
+    smsReceiveBroadcastReceiver.setListener(null)
     super.onDestroy()
-    smsBroadcastReceiver.setListener(null)
   }
 
   /**
@@ -74,9 +97,9 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun setBroadcastReceiverListener() {
-    smsBroadcastReceiver.setListener(object : SmsBroadcastReceiver.SmsListener {
+    smsReceiveBroadcastReceiver.setListener(object : SmsReceiveBroadcastReceiver.SmsListener {
       override fun onTextReceived(sms: SmsModel?) {
-        Log.d("MainActivity", sms.toString())
+        Log.d(TAG, sms.toString())
       }
     })
   }

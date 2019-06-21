@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.ralphevmanzano.awssmsgateway">
 
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
   <uses-permission android:name="android.permission.RECEIVE_SMS"/>
   <uses-permission android:name="android.permission.READ_SMS"/>
   <uses-permission android:name="android.permission.SEND_SMS"/>
@@ -17,19 +18,20 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:supportsRtl="true"
       android:theme="@style/AppTheme">
-    <activity android:name=".MainActivity">
+    <activity android:name=".ui.MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
 
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
-    <receiver android:name=".SmsBroadcastReceiver" android:enabled="true">
+
+    <receiver android:name=".receivers.SmsReceiveBroadcastReceiver" android:enabled="true">
       <intent-filter android:priority="1000">
         <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
       </intent-filter>
     </receiver>
-    <service android:name=".services.MyService"/>
+
     <service android:name=".services.FCMService"
              android:enabled="true"
              android:exported="true">
@@ -39,6 +41,8 @@
         <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
       </intent-filter>
     </service>
+    <service android:name=".services.AwsService"/>
+    <!--<service android:name=".services.AwsService"/>-->
   </application>
 
 </manifest>

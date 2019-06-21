@@ -4,10 +4,10 @@
             xmlns:tools="http://schemas.android.com/tools" android:id="@+id/main_nav"
             app:startDestination="@id/homeFragment">
 
-  <fragment android:id="@+id/homeFragment" android:name="com.ralphevmanzano.awssmsgateway.HomeFragment"
+  <fragment android:id="@+id/homeFragment" android:name="com.ralphevmanzano.awssmsgateway.ui.HomeFragment"
             android:label="fragment_home" tools:layout="@layout/fragment_home">
     <action android:id="@+id/action_home_settings" app:destination="@+id/settingsFragment"/>
   </fragment>
-  <fragment android:id="@+id/settingsFragment" android:name="com.ralphevmanzano.awssmsgateway.SettingsFragment"
+  <fragment android:id="@+id/settingsFragment" android:name="com.ralphevmanzano.awssmsgateway.ui.SettingsFragment"
             android:label="SettingsFragment"/>
 </navigation>

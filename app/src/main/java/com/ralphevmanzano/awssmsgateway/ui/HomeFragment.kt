@@ -1,22 +1,34 @@
-package com.ralphevmanzano.awssmsgateway
+package com.ralphevmanzano.awssmsgateway.ui
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.work.*
 import com.google.gson.Gson
+import com.ralphevmanzano.awssmsgateway.R
+import com.ralphevmanzano.awssmsgateway.db.SmsDatabase
 import com.ralphevmanzano.awssmsgateway.models.User
 import com.ralphevmanzano.awssmsgateway.utils.API_WORKER_INPUT_KEY
 import com.ralphevmanzano.awssmsgateway.workers.ApiWorker
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : Fragment() {
 
+  private val disposable = CompositeDisposable()
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setHasOptionsMenu(true)
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    disposable.clear()
   }
 
   override fun onCreateView(
@@ -46,6 +58,17 @@ class HomeFragment : Fragment() {
         .build()
 
       WorkManager.getInstance().enqueue(apiWorker)
+    }
+
+    btnClear.setOnClickListener {
+      val dao = SmsDatabase.getInstance(it.context).smsDao()
+      disposable.add(dao.deleteAll()
+        .subscribeOn(Schedulers.io())
+        .subscribe({
+          Log.d("Room", "Successfully cleared the table!")
+        }, { error ->
+          Log.e("Room", "Error deleting entries: $error")
+        }))
     }
   }
 

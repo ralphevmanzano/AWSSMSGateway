@@ -5,42 +5,47 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.work.OneTimeWorkRequest
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
-import com.ralphevmanzano.awssmsgateway.MainActivity
+import com.ralphevmanzano.awssmsgateway.ui.MainActivity
 import com.ralphevmanzano.awssmsgateway.db.SmsDatabase
 import com.ralphevmanzano.awssmsgateway.models.FcmResponse
 import com.ralphevmanzano.awssmsgateway.models.SmsEntity
-import com.ralphevmanzano.awssmsgateway.utils.SMS_WORKER_INPUT_KEY
-import com.ralphevmanzano.awssmsgateway.workers.SmsWorker
+import com.ralphevmanzano.awssmsgateway.utils.SMS_PROCESS_ACTION
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
-
+import java.util.*
 
 
 class FCMService : FirebaseMessagingService() {
 
   private var notificationManager: NotificationManager? = null
   private val disposable = CompositeDisposable()
+  private var fcmResponse: FcmResponse? = null
+  private var messages: Queue<SmsEntity> = ArrayDeque()
 
   companion object {
     const val DEFAULT_CHANNEL_NAME = "FCM Notifications"
     const val DEFAULT_CHANNEL_ID = "fcm_notification_id"
   }
 
+  override fun onCreate() {
+    super.onCreate()
+//    smsSendBroadcastReceiver = SmsSendBroadcastReceiver()
+//    smsSendBroadcastReceiver?.setListener(this)
+//    applicationContext.registerReceiver(smsSendBroadcastReceiver, IntentFilter(SENT_ACTION))
+  }
+
   override fun onDestroy() {
     super.onDestroy()
     disposable.clear()
+//    smsSendBroadcastReceiver?.setListener(null)
+//    applicationContext.unregisterReceiver(smsSendBroadcastReceiver)
   }
 
   override fun onMessageReceived(msg: RemoteMessage?) {
@@ -49,7 +54,6 @@ class FCMService : FirebaseMessagingService() {
 
     msg?.data?.isNotEmpty()?.let {
       val jsonStr = JSONObject(msg.data).toString()
-      Log.d("Sms", "new JSONObject(remoteMessage.getData()) : $jsonStr")
 
       val finalJson = jsonStr.replace("\\\\", "")
         .replace("\"[", "[")
@@ -58,15 +62,15 @@ class FCMService : FirebaseMessagingService() {
 
       Log.d("Sms", "new JSONObject(remoteMessage.getData()) : $finalJson")
 
-      val fcmResponse = Gson().fromJson(finalJson, FcmResponse::class.java)
+      fcmResponse = Gson().fromJson(finalJson, FcmResponse::class.java)
 
-      showNotification(fcmResponse.title, fcmResponse.body)
-
-      for (sms in fcmResponse.sms) {
-        Log.d("Sms", "Sms ${sms.num} ${sms.message}")
+      fcmResponse?.let {
+//        showNotification(it.title, it.body)
+        for (i in it.sms) {
+          messages.add(i)
+        }
+        saveMessagesToDb(it.sms)
       }
-      saveMessagesToDb(fcmResponse.sms)
-      startSmsWork(fcmResponse.sms)
     }
   }
 
@@ -76,19 +80,17 @@ class FCMService : FirebaseMessagingService() {
       .subscribeOn(Schedulers.io())
       .subscribe({
         Log.d("Room", "Successfully inserted!")
+        broadcastSmsProcess()
       }, { error ->
         Log.e("Room", "Error inserting messages: $error")
       }))
   }
 
-  private fun startSmsWork(sms: Array<SmsEntity>) {
-    val data = Gson().toJson(sms)
-
-    val smsWorkerRequest = OneTimeWorkRequestBuilder<SmsWorker>()
-      .setInputData(workDataOf(SMS_WORKER_INPUT_KEY to data))
-      .build()
-
-    WorkManager.getInstance().enqueue(smsWorkerRequest)
+  private fun broadcastSmsProcess() {
+    Log.d("Sms", "Broadcasting process intent")
+    val intent = Intent()
+    intent.action = SMS_PROCESS_ACTION
+    sendBroadcast(intent)
   }
 
   private fun showNotification(title: String?, msg: String?) {

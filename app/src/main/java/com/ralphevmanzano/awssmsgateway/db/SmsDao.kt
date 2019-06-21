@@ -4,16 +4,20 @@ import androidx.room.*
 import com.ralphevmanzano.awssmsgateway.models.SmsEntity
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Single
 
 @Dao
 interface SmsDao {
 
   @Query("SELECT * FROM messages")
-  fun getMessages(): Flowable<List<SmsEntity>>
+  fun getMessages(): Single<List<SmsEntity>>
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   fun insertMessages(messages: List<SmsEntity>): Completable
 
-  @Delete
-  fun delete(sms: SmsEntity)
+  @Query("DELETE FROM messages WHERE id = :id")
+  fun delete(id: Int): Completable
+
+  @Query("DELETE FROM messages")
+  fun deleteAll(): Completable
 }

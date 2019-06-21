@@ -6,7 +6,7 @@ import androidx.preference.PreferenceManager
 import androidx.work.RxWorker
 import androidx.work.WorkerParameters
 import com.google.gson.Gson
-import com.ralphevmanzano.awssmsgateway.ApiService
+import com.ralphevmanzano.awssmsgateway.api.ApiService
 import com.ralphevmanzano.awssmsgateway.R
 import com.ralphevmanzano.awssmsgateway.models.SmsModel
 import com.ralphevmanzano.awssmsgateway.utils.API_WORKER_INPUT_KEY

@@ -1,9 +1,9 @@
-package com.ralphevmanzano.awssmsgateway
+package com.ralphevmanzano.awssmsgateway.api
 
 import android.util.Log
+import com.ralphevmanzano.awssmsgateway.BuildConfig
 import com.ralphevmanzano.awssmsgateway.models.ApiResponse
 import com.ralphevmanzano.awssmsgateway.models.SmsModel
-import com.ralphevmanzano.awssmsgateway.models.User
 import io.reactivex.Single
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

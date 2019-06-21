@@ -12,6 +12,7 @@ import com.ralphevmanzano.awssmsgateway.models.SmsEntity
 import com.ralphevmanzano.awssmsgateway.utils.*
 
 class SmsWorker(ctx: Context, workerParams: WorkerParameters) : Worker(ctx, workerParams) {
+  
   override fun doWork(): Result {
     return try {
       val data = inputData.getString(SMS_WORKER_INPUT_KEY)
@@ -27,13 +28,13 @@ class SmsWorker(ctx: Context, workerParams: WorkerParameters) : Worker(ctx, work
   private fun sendSms(msg: SmsEntity) {
     try {
       Log.d("SmsWorker", "Sending message ${msg.id}....")
-      val sentIntent = Intent(SENT_INTENT_ACTION)
+      val sentIntent = Intent(SENT_ACTION)
       sentIntent.putExtra(SENT_INTENT_EXTRA, msg.id)
-      val sentPI = PendingIntent.getBroadcast(applicationContext, 0, sentIntent, 0)
+      val sentPI = PendingIntent.getBroadcast(applicationContext, 0, sentIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-      val deliveredIntent = Intent(DELIVERED_INTENT_ACTION)
+      val deliveredIntent = Intent(DELIVERED_ACTION)
       deliveredIntent.putExtra(DELIVERED_INTENT_EXTRA, msg.id)
-      val deliveredPI = PendingIntent.getBroadcast(applicationContext, 0, sentIntent, 0)
+      val deliveredPI = PendingIntent.getBroadcast(applicationContext, 0, sentIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
       val smsManager = SmsManager.getDefault()
       smsManager.sendTextMessage(msg.num, null, msg.message, sentPI, deliveredPI)

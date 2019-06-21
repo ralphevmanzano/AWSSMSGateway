@@ -1,5 +1,6 @@
-package com.ralphevmanzano.awssmsgateway
+package com.ralphevmanzano.awssmsgateway.receivers
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
@@ -17,11 +18,10 @@ import com.ralphevmanzano.awssmsgateway.models.SmsModel
 import com.ralphevmanzano.awssmsgateway.utils.API_WORKER_INPUT_KEY
 import com.ralphevmanzano.awssmsgateway.workers.ApiWorker
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 
-class SmsBroadcastReceiver : BroadcastReceiver() {
-  private val TAG = "SmsBroadcastReceiver"
+class SmsReceiveBroadcastReceiver : BroadcastReceiver() {
+  private val TAG = "SmsReceiveBroadcastReceiver"
 
   private var smsListener: SmsListener? = null
   private var notificationManager: NotificationManager? = null
@@ -34,6 +34,7 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
 
   private lateinit var context: Context
 
+  @SuppressLint("LongLogTag")
   override fun onReceive(context: Context, intent: Intent) {
     this.context = context
 
@@ -119,7 +120,9 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
     notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
     createNotificationChannel()
 
-    val notification = NotificationCompat.Builder(context, DEFAULT_CHANNEL_ID)
+    val notification = NotificationCompat.Builder(context,
+      DEFAULT_CHANNEL_ID
+    )
       .setContentTitle("Test")
       .setContentText("This is a test notification")
       .setSmallIcon(android.R.drawable.ic_menu_view)
@@ -135,7 +138,8 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
       if (notificationManager?.getNotificationChannel(DEFAULT_CHANNEL_ID) == null) {
         notificationManager?.createNotificationChannel(
           NotificationChannel(
-            DEFAULT_CHANNEL_ID, DEFAULT_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT
+            DEFAULT_CHANNEL_ID,
+            DEFAULT_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT
           )
         )
       }

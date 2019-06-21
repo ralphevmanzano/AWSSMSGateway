@@ -1,4 +1,4 @@
-package com.ralphevmanzano.awssmsgateway
+package com.ralphevmanzano.awssmsgateway.ui
 
 
 import android.content.SharedPreferences
@@ -7,7 +7,7 @@ import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceGroup
-import me.jessyan.retrofiturlmanager.RetrofitUrlManager
+import com.ralphevmanzano.awssmsgateway.R
 
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
