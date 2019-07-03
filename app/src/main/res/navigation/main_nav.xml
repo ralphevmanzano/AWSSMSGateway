@@ -7,7 +7,10 @@
   <fragment android:id="@+id/homeFragment" android:name="com.ralphevmanzano.awssmsgateway.ui.HomeFragment"
             android:label="fragment_home" tools:layout="@layout/fragment_home">
     <action android:id="@+id/action_home_settings" app:destination="@+id/settingsFragment"/>
+    <action android:id="@+id/action_home_maintenance" app:destination="@id/maintenanceFragment"/>
   </fragment>
   <fragment android:id="@+id/settingsFragment" android:name="com.ralphevmanzano.awssmsgateway.ui.SettingsFragment"
             android:label="SettingsFragment"/>
+  <fragment android:id="@+id/maintenanceFragment" android:name="com.ralphevmanzano.awssmsgateway.ui.MaintenanceFragment"
+            android:label="fragment_maintenance" tools:layout="@layout/fragment_maintenance"/>
 </navigation>

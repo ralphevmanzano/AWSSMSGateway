@@ -2,19 +2,17 @@ package com.ralphevmanzano.awssmsgateway.ui
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
-import androidx.work.*
-import com.google.gson.Gson
+import com.ralphevmanzano.awssmsgateway.utils.PreferenceHelper.get
+import com.ralphevmanzano.awssmsgateway.utils.PreferenceHelper.set
 import com.ralphevmanzano.awssmsgateway.R
-import com.ralphevmanzano.awssmsgateway.db.SmsDatabase
-import com.ralphevmanzano.awssmsgateway.models.User
-import com.ralphevmanzano.awssmsgateway.utils.API_WORKER_INPUT_KEY
-import com.ralphevmanzano.awssmsgateway.workers.ApiWorker
+import com.ralphevmanzano.awssmsgateway.ui.views.EditTextDialog
+import com.ralphevmanzano.awssmsgateway.utils.DIALOG_SERVER_IP
+import com.ralphevmanzano.awssmsgateway.utils.PREF_SERVER_IP
+import com.ralphevmanzano.awssmsgateway.utils.PreferenceHelper.defaultPrefs
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : Fragment() {
@@ -44,23 +42,23 @@ class HomeFragment : Fragment() {
   }
 
   private fun initUI() {
-    button.setOnClickListener {
-      val user = User("Ralph", "Manzz", "Davs", "1234", "uy", "123")
-      val data = Gson().toJson(user)
 
-      val constraints = Constraints.Builder()
-        .setRequiredNetworkType(NetworkType.CONNECTED)
-        .build()
+    btnSettings.setOnClickListener {
+      val pref = context?.let { t -> defaultPrefs(t) }
+      val dialog = EditTextDialog.newInstance(getString(R.string.server_ip_address), null, pref?.get(PREF_SERVER_IP), false)
 
-      val apiWorker = OneTimeWorkRequestBuilder<ApiWorker>()
-        .setConstraints(constraints)
-        .setInputData(workDataOf(API_WORKER_INPUT_KEY to data))
-        .build()
+      dialog.onOk = {
+        pref?.set(PREF_SERVER_IP, dialog.editText.text.toString())
+      }
 
-      WorkManager.getInstance().enqueue(apiWorker)
+      fragmentManager?.let { f -> dialog.show(f, DIALOG_SERVER_IP) }
     }
 
-    btnClear.setOnClickListener {
+    btnMaintenance.setOnClickListener {
+      Navigation.findNavController(it).navigate(R.id.action_home_maintenance)
+    }
+
+    /*btnSettings.setOnClickListener {
       val dao = SmsDatabase.getInstance(it.context).smsDao()
       disposable.add(dao.deleteAll()
         .subscribeOn(Schedulers.io())
@@ -69,12 +67,12 @@ class HomeFragment : Fragment() {
         }, { error ->
           Log.e("Room", "Error deleting entries: $error")
         }))
-    }
+    }*/
   }
 
   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
     super.onCreateOptionsMenu(menu, inflater)
-    inflater.inflate(R.menu.main_menu, menu)
+//    inflater.inflate(R.menu.main_menu, menu)
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {

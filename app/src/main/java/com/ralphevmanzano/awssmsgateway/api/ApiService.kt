@@ -4,6 +4,7 @@ import android.util.Log
 import com.ralphevmanzano.awssmsgateway.BuildConfig
 import com.ralphevmanzano.awssmsgateway.models.ApiResponse
 import com.ralphevmanzano.awssmsgateway.models.SmsModel
+import com.ralphevmanzano.awssmsgateway.models.WeatherDataModel
 import io.reactivex.Single
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -27,9 +28,9 @@ interface ApiService {
       }
 
       val okHttpClient = OkHttpClient.Builder()
-        .connectTimeout(5, TimeUnit.SECONDS)
-        .writeTimeout(5, TimeUnit.SECONDS)
-        .readTimeout(5, TimeUnit.SECONDS)
+        .connectTimeout(20, TimeUnit.SECONDS)
+        .writeTimeout(20, TimeUnit.SECONDS)
+        .readTimeout(20, TimeUnit.SECONDS)
         .addInterceptor(loggingInterceptor)
 
       val retrofit = Retrofit.Builder()
@@ -44,6 +45,6 @@ interface ApiService {
   }
 
   @POST
-  fun sendToServer(@Url url: String?, @Body sms: SmsModel): Single<ApiResponse>
+  fun sendToServer(@Url url: String?, @Body weatherData: WeatherDataModel): Single<ApiResponse>
 
 }

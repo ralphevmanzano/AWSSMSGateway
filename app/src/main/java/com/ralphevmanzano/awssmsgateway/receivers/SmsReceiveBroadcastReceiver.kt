@@ -15,6 +15,7 @@ import androidx.core.app.NotificationCompat
 import androidx.work.*
 import com.google.gson.Gson
 import com.ralphevmanzano.awssmsgateway.models.SmsModel
+import com.ralphevmanzano.awssmsgateway.models.WeatherDataModel
 import com.ralphevmanzano.awssmsgateway.utils.API_WORKER_INPUT_KEY
 import com.ralphevmanzano.awssmsgateway.workers.ApiWorker
 import java.util.*
@@ -26,6 +27,7 @@ class SmsReceiveBroadcastReceiver : BroadcastReceiver() {
   private var smsListener: SmsListener? = null
   private var notificationManager: NotificationManager? = null
 
+  //(013226007256361,2019/01/28,00:00:00,-68,12.65,23.4,75.5,986.7,0.00,0.00,170,0.88,0.00,0.00,AC89)
 
   companion object {
     const val DEFAULT_CHANNEL_NAME = "SmsModel Notifications"
@@ -72,24 +74,49 @@ class SmsReceiveBroadcastReceiver : BroadcastReceiver() {
         SmsModel(sender, body, date)
       }
 
-      sms?.let {
-        if (it.message.startsWith("(", true) &&
-            it.message.endsWith(")", true)) {
+      sms?.let {model ->
+        if (model.message.startsWith("(", true) &&
+          model.message.endsWith(")", true)) {
+
+          val csv = model.message.substring(1, model.message.length - 1)
+          val separated = csv.split(",").map { it.trim() }
+
+          val weatherData = WeatherDataModel(
+            separated[0],
+            separated[1],
+            separated[2],
+            separated[3],
+            separated[4],
+            separated[5],
+            separated[6],
+            separated[7],
+            separated[8],
+            separated[9],
+            separated[10],
+            separated[11],
+            separated[12],
+            separated[13],
+            separated[14]
+          )
+
+          val jsonWeather = Gson().toJson(weatherData)
+
+          Log.d("Json", jsonWeather)
+
           if (smsListener != null) {
             Log.d("Receiver", smsBody)
             smsListener!!.onTextReceived(sms)
           }
 
-          startApiWork(sms)
-          initNotification()
+          startApiWork(jsonWeather)
+//          initNotification()
         }
       }
     }
   }
 
-  private fun startApiWork(sms: SmsModel?) {
+  private fun startApiWork(json: String) {
     //intent service or workmanager
-    val data = Gson().toJson(sms)
 
     val constraints = Constraints.Builder()
       .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -97,7 +124,7 @@ class SmsReceiveBroadcastReceiver : BroadcastReceiver() {
 
     val apiWorkerRequest = OneTimeWorkRequestBuilder<ApiWorker>()
       .setConstraints(constraints)
-      .setInputData(workDataOf(API_WORKER_INPUT_KEY to data))
+      .setInputData(workDataOf(API_WORKER_INPUT_KEY to json))
       .build()
 
     WorkManager.getInstance().enqueue(apiWorkerRequest)

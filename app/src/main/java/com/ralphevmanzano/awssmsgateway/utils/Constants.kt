@@ -19,6 +19,9 @@ const val SMS_UNIQUE_WORK = "SMS_UNIQUE_WORK"
 // Preference keys
 const val PREF_SERVER_IP = "PREF_SERVER_IP"
 
+// EditDialogText Tag
+const val DIALOG_SERVER_IP = "DIALOG_SERVER_IP"
+
 // Input Data Key
 const val SMS_WORKER_INPUT_KEY = "SMS_WORKER_INPUT_KEY"
 
