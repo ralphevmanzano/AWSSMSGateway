@@ -7,17 +7,14 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 
 @Dao
-interface SmsDao {
+abstract class SmsDao : BaseDao<SmsEntity>() {
 
   @Query("SELECT * FROM messages")
-  fun getMessages(): Single<List<SmsEntity>>
-
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  fun insertMessages(messages: List<SmsEntity>): Completable
+  abstract fun getMessages(): Single<List<SmsEntity>>
 
   @Query("DELETE FROM messages WHERE id = :id")
-  fun delete(id: Int): Completable
+  abstract fun delete(id: Int): Completable
 
   @Query("DELETE FROM messages")
-  fun deleteAll(): Completable
+  abstract fun deleteAll(): Completable
 }

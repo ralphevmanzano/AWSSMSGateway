@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+  <Button
+    android:id="@+id/btnView"
+    style="@style/Aws.BottomButton"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/view"
+    android:textColor="@color/btn_blue" />
+
+  <Button
+    android:id="@+id/btnEdit"
+    style="@style/Aws.BottomButton"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/edit"
+    android:textColor="@color/btn_orange" />
+
+  <Button
+    android:id="@+id/btnDelete"
+    style="@style/Aws.BottomButton"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/delete"
+    android:textColor="@color/btn_red" />
+</LinearLayout>

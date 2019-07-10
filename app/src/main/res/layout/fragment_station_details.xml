@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+
+    <import type="android.text.InputType" />
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="com.ralphevmanzano.awssmsgateway.ui.viewmodels.StationDetailsViewModel" />
+  </data>
+
+  <ScrollView
+    android:id="@+id/scrollView2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp">
+
+      <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="@{viewModel.title}"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/add_new" />
+
+      <TextView
+        android:id="@+id/txtStation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/station_name"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+
+      <EditText
+        android:id="@+id/etStation"
+        style="@style/Aws.FieldSmall"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:inputType="@{safeUnbox(viewModel.areFieldsEditable) ? InputType.TYPE_TEXT_VARIATION_PERSON_NAME : InputType.TYPE_NULL}"
+        android:text="@={viewModel.stationName}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtStation"
+        tools:ignore="Autofill,LabelFor" />
+
+      <TextView
+        android:id="@+id/txtMobNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/mobile_number"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/etStation"
+        app:layout_constraintTop_toBottomOf="@+id/etStation" />
+
+      <EditText
+        android:id="@+id/etMobNo"
+        style="@style/Aws.FieldSmall"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="@{safeUnbox(viewModel.areFieldsEditable) ? InputType.TYPE_TEXT_VARIATION_PERSON_NAME : InputType.TYPE_NULL}"
+        android:text="@={viewModel.mobileNo}"
+        app:layout_constraintEnd_toEndOf="@+id/etStation"
+        app:layout_constraintStart_toStartOf="@+id/txtMobNo"
+        app:layout_constraintTop_toBottomOf="@+id/txtMobNo"
+        tools:ignore="Autofill,LabelFor" />
+
+      <TextView
+        android:id="@+id/txtImei"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/imei"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/etMobNo"
+        app:layout_constraintTop_toBottomOf="@+id/etMobNo" />
+
+      <EditText
+        android:id="@+id/etImei"
+        style="@style/Aws.FieldSmall"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="@{safeUnbox(viewModel.areFieldsEditable) ? InputType.TYPE_CLASS_NUMBER : InputType.TYPE_NULL}"
+        android:text="@={viewModel.imei}"
+        app:layout_constraintEnd_toEndOf="@+id/etMobNo"
+        app:layout_constraintStart_toStartOf="@+id/txtImei"
+        app:layout_constraintTop_toBottomOf="@+id/txtImei"
+        tools:ignore="Autofill,LabelFor" />
+
+      <TextView
+        android:id="@+id/txtDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/description"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/etImei"
+        app:layout_constraintTop_toBottomOf="@+id/etImei" />
+
+      <EditText
+        android:id="@+id/etDesc"
+        style="@style/Aws.FieldSmall"
+        android:layout_width="0dp"
+        android:layout_height="88dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:gravity="start"
+        android:inputType="@{safeUnbox(viewModel.areFieldsEditable) ? InputType.TYPE_TEXT_FLAG_MULTI_LINE : InputType.TYPE_NULL}"
+        android:scrollHorizontally="false"
+        android:text="@={viewModel.description}"
+        app:layout_constraintEnd_toEndOf="@+id/etImei"
+        app:layout_constraintStart_toStartOf="@+id/txtDesc"
+        app:layout_constraintTop_toBottomOf="@+id/txtDesc"
+        tools:ignore="Autofill,LabelFor" />
+
+      <TextView
+        android:id="@+id/txtRemarks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/remarks"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/etDesc"
+        app:layout_constraintTop_toBottomOf="@+id/etDesc" />
+
+      <EditText
+        android:id="@+id/etRemarks"
+        style="@style/Aws.FieldSmall"
+        android:layout_width="0dp"
+        android:layout_height="88dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:gravity="start"
+        android:inputType="@{safeUnbox(viewModel.areFieldsEditable) ? InputType.TYPE_TEXT_FLAG_MULTI_LINE : InputType.TYPE_NULL}"
+        android:scrollHorizontally="false"
+        android:text="@={viewModel.remarks}"
+        app:layout_constraintEnd_toEndOf="@+id/etDesc"
+        app:layout_constraintStart_toStartOf="@+id/txtRemarks"
+        app:layout_constraintTop_toBottomOf="@+id/txtRemarks"
+        tools:ignore="Autofill,LabelFor" />
+
+      <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/btn_green"
+        android:text="@string/save"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:visibility="@{viewModel.areFieldsEditable ? View.VISIBLE : View.GONE}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnCancel"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etRemarks" />
+
+      <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_red"
+        android:text="@string/cancel"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:visibility="@{viewModel.areFieldsEditable ? View.VISIBLE : View.GONE}"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSave"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnSave"
+        app:layout_constraintTop_toTopOf="@+id/btnSave" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+  </ScrollView>
+</layout>

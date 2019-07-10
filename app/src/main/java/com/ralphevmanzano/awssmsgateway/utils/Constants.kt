@@ -35,3 +35,6 @@ const val DELIVERED_ACTION = "com.ralphevmazano.awssmsgateway.SMS_DELIVERED"
 const val SMS_PROCESS_ACTION = "com.ralphevmanzano.awssmsgateway.SMS_PROCESS"
 const val EXIT_APP_ACTION = "com.ralphevmanzano.awssmsgateway.EXIT_APP"
 const val START_SERVICE = "com.ralphevmanzano.awssmsgateway.START_SERVICE"
+
+// Event Keys
+const val BOTTOM_SHEET = "BOTTOM_SHEET"

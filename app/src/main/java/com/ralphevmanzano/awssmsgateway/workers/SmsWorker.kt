@@ -20,7 +20,7 @@ class SmsWorker(ctx: Context, workerParams: WorkerParameters) : Worker(ctx, work
       sendSms(messages)
       Result.success()
     } catch (e: Exception) {
-      Log.e("Sms", e.localizedMessage)
+      Log.e("Sms", e.toString())
       Result.failure()
     }
   }
@@ -39,7 +39,7 @@ class SmsWorker(ctx: Context, workerParams: WorkerParameters) : Worker(ctx, work
       val smsManager = SmsManager.getDefault()
       smsManager.sendTextMessage(msg.num, null, msg.message, sentPI, deliveredPI)
     } catch (e: Exception) {
-      Log.e("Sms", e.localizedMessage)
+      Log.e("Sms", e.toString())
     }
   }
 }

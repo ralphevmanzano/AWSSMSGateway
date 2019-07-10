@@ -18,7 +18,7 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.google.gson.Gson
 import com.ralphevmanzano.awssmsgateway.R
-import com.ralphevmanzano.awssmsgateway.db.SmsDatabase
+import com.ralphevmanzano.awssmsgateway.db.AwsDatabase
 import com.ralphevmanzano.awssmsgateway.models.SmsEntity
 import com.ralphevmanzano.awssmsgateway.receivers.SmsSendBroadcastReceiver
 import com.ralphevmanzano.awssmsgateway.ui.MainActivity
@@ -117,7 +117,7 @@ class AwsService: Service(), SmsSendBroadcastReceiver.SmsSentListener {
   private fun checkPendingSms() {
     Log.d("PendingSms", "Checking Database SMS")
 
-    val dao = SmsDatabase.getInstance(applicationContext).smsDao()
+    val dao = AwsDatabase.getInstance(applicationContext).smsDao()
     disposable.add(dao.getMessages()
       .subscribeOn(Schedulers.io())
       .subscribe({ sms ->

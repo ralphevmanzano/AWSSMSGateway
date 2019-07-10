@@ -1,4 +1,4 @@
-package com.ralphevmanzano.awssmsgateway.ui
+package com.ralphevmanzano.awssmsgateway.ui.fragments
 
 
 import android.os.Bundle
@@ -59,7 +59,7 @@ class HomeFragment : Fragment() {
     }
 
     /*btnSettings.setOnClickListener {
-      val dao = SmsDatabase.getInstance(it.context).smsDao()
+      val dao = AwsDatabase.getInstance(it.context).smsDao()
       disposable.add(dao.deleteAll()
         .subscribeOn(Schedulers.io())
         .subscribe({

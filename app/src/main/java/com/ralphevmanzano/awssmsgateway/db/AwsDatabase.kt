@@ -5,23 +5,26 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.ralphevmanzano.awssmsgateway.models.SmsEntity
+import com.ralphevmanzano.awssmsgateway.models.Station
 
-@Database(entities = [SmsEntity::class], version = 1)
-abstract class SmsDatabase: RoomDatabase() {
+@Database(entities = [SmsEntity::class, Station::class], version = 1)
+abstract class AwsDatabase: RoomDatabase() {
 
   abstract fun smsDao(): SmsDao
 
-  companion object {
-    @Volatile private var INSTANCE: SmsDatabase? = null
+  abstract fun stationDao(): StationDao
 
-    fun getInstance(context: Context): SmsDatabase =
+  companion object {
+    @Volatile private var INSTANCE: AwsDatabase? = null
+
+    fun getInstance(context: Context): AwsDatabase =
       INSTANCE ?: synchronized(this) {
         INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
       }
 
     private fun buildDatabase(context: Context) =
       Room.databaseBuilder(context.applicationContext,
-        SmsDatabase::class.java, "Sample.db")
+        AwsDatabase::class.java, "awssms.db")
         .build()
   }
 }

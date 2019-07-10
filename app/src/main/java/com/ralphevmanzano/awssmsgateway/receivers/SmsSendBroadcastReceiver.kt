@@ -5,7 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.ralphevmanzano.awssmsgateway.db.SmsDatabase
+import com.ralphevmanzano.awssmsgateway.db.AwsDatabase
 import com.ralphevmanzano.awssmsgateway.utils.SENT_ACTION
 import com.ralphevmanzano.awssmsgateway.utils.SENT_INTENT_EXTRA
 import io.reactivex.schedulers.Schedulers
@@ -23,7 +23,7 @@ class SmsSendBroadcastReceiver : BroadcastReceiver() {
           Activity.RESULT_OK -> {
             Log.d("SendBroadcast", "Sent: OK")
             context?.let {
-              val dao = SmsDatabase.getInstance(it).smsDao()
+              val dao = AwsDatabase.getInstance(it).smsDao()
               smsId?.let { id ->
                 dao.delete(id)
                   .subscribeOn(Schedulers.io())

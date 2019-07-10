@@ -8,4 +8,33 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="Aws.BottomButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/btn_ripple</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Aws.FieldSmall" parent="Widget.AppCompat.EditText">
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/black_border</item>
+    </style>
+
+    <style name="Aws.AlertDialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/btn_red</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/btn_blue</item>
+    </style>
 </resources>

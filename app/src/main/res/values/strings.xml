@@ -16,13 +16,24 @@
   <string name="aws_service_title">AWS SMS Gateway</string>
   <string name="exit">Exit</string>
   <string name="maintenance">Maintenance</string>
-
-  <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="change_url">Change URL</string>
+  <string name="hello_blank_fragment">Hello blank fragment</string>
+  <string name="change_url">Change URL</string>
   <string name="list_of_stations">List of Stations</string>
   <string name="list_of_commands">List of Commands</string>
   <string name="list_of_stations_and">List of Stations and Mobile Numbers</string>
   <string name="add_new">Add New</string>
+  <string name="view">View</string>
+  <string name="edit">Edit</string>
+  <string name="delete">Delete</string>
+  <string name="mobile_number">Mobile Number</string>
+  <string name="station_name">Station Name</string>
+  <string name="imei">IMEI</string>
+  <string name="description">Description</string>
+  <string name="remarks">Remarks</string>
+  <string name="save">Save</string>
+  <string name="delete_station">Delete Station</string>
+  <string name="are_you_sure_you_want_to_delete">Are you sure you want to delete %s?</string>
+  <string name="yes">Yes</string>
+  <string name="no">No</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.ralphevmanzano.awssmsgateway.ui
+package com.ralphevmanzano.awssmsgateway.ui.fragments
 
 
 import android.content.SharedPreferences

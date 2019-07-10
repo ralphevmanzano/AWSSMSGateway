@@ -5,11 +5,12 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "station")
 data class Station(
-    @PrimaryKey
-    var id: Int,
-    val IMIE: Int,
-    val mobileNo: String,
     val stationName: String,
+    val mobileNo: String,
+    val imei: String,
     val description: String,
     val remarks: String
-)
+) {
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
+}

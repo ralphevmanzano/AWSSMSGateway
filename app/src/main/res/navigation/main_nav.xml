@@ -1,16 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/main_nav"
-            app:startDestination="@id/homeFragment">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/main_nav"
+  app:startDestination="@id/homeFragment">
 
-  <fragment android:id="@+id/homeFragment" android:name="com.ralphevmanzano.awssmsgateway.ui.HomeFragment"
-            android:label="fragment_home" tools:layout="@layout/fragment_home">
-    <action android:id="@+id/action_home_settings" app:destination="@+id/settingsFragment"/>
-    <action android:id="@+id/action_home_maintenance" app:destination="@id/maintenanceFragment"/>
+  <fragment
+    android:id="@+id/homeFragment"
+    android:name="com.ralphevmanzano.awssmsgateway.ui.fragments.HomeFragment"
+    android:label="fragment_home"
+    tools:layout="@layout/fragment_home">
+    <action
+      android:id="@+id/action_home_settings"
+      app:destination="@+id/settingsFragment" />
+    <action
+      android:id="@+id/action_home_maintenance"
+      app:destination="@id/maintenanceFragment" />
   </fragment>
-  <fragment android:id="@+id/settingsFragment" android:name="com.ralphevmanzano.awssmsgateway.ui.SettingsFragment"
-            android:label="SettingsFragment"/>
-  <fragment android:id="@+id/maintenanceFragment" android:name="com.ralphevmanzano.awssmsgateway.ui.MaintenanceFragment"
-            android:label="fragment_maintenance" tools:layout="@layout/fragment_maintenance"/>
+  <fragment
+    android:id="@+id/settingsFragment"
+    android:name="com.ralphevmanzano.awssmsgateway.ui.fragments.SettingsFragment"
+    android:label="SettingsFragment" />
+  <fragment
+    android:id="@+id/maintenanceFragment"
+    android:name="com.ralphevmanzano.awssmsgateway.ui.fragments.MaintenanceFragment"
+    android:label="fragment_maintenance"
+    tools:layout="@layout/fragment_maintenance">
+    <action
+      android:id="@+id/action_maintenance_stations"
+      app:destination="@id/stationsFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/stationsFragment"
+    android:name="com.ralphevmanzano.awssmsgateway.ui.fragments.StationsFragment"
+    android:label="fragment_stations"
+    tools:layout="@layout/fragment_stations">
+    <action
+      android:id="@+id/detailsAction"
+      app:destination="@id/stationDetailsFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/stationDetailsFragment"
+    android:name="com.ralphevmanzano.awssmsgateway.ui.fragments.StationDetailsFragment"
+    android:label="action_stations_station_det"
+    tools:layout="@layout/fragment_station_details">
+    <argument
+      android:name="type"
+      android:defaultValue="-1"
+      app:argType="integer" />
+    <argument
+      android:name="id"
+      android:defaultValue="-1"
+      app:argType="integer" />
+  </fragment>
 </navigation>

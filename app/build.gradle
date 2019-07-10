@@ -1,20 +1,25 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
-
+apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.ralphevmanzano.awssmsgateway"
-        minSdkVersion 19
-        targetSdkVersion 28
+        minSdkVersion 21
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas".toString())
+            }
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -34,6 +39,7 @@ android {
 dependencies {
     def work_version = "2.0.1"
     def room_version = "2.1.0"
+    def nav_version_ktx = "2.1.0-alpha06"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -62,9 +68,10 @@ dependencies {
 
     implementation 'com.facebook.stetho:stetho:1.5.1'
 
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version_ktx"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version_ktx"
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'android.arch.navigation:navigation-fragment:1.0.0'
-    implementation 'android.arch.navigation:navigation-ui:1.0.0'
 }

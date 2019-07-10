@@ -12,7 +12,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.ralphevmanzano.awssmsgateway.ui.MainActivity
-import com.ralphevmanzano.awssmsgateway.db.SmsDatabase
+import com.ralphevmanzano.awssmsgateway.db.AwsDatabase
 import com.ralphevmanzano.awssmsgateway.models.FcmResponse
 import com.ralphevmanzano.awssmsgateway.models.SmsEntity
 import com.ralphevmanzano.awssmsgateway.utils.SMS_PROCESS_ACTION
@@ -53,7 +53,7 @@ class FCMService : FirebaseMessagingService() {
     // Check if message contains a data payload.
 
     msg?.data?.isNotEmpty()?.let {
-      val jsonStr = JSONObject(msg.data).toString()
+      val jsonStr = JSONObject(msg.data as Map<*, *>).toString()
 
       val finalJson = jsonStr.replace("\\\\", "")
         .replace("\"[", "[")
@@ -75,8 +75,8 @@ class FCMService : FirebaseMessagingService() {
   }
 
   private fun saveMessagesToDb(sms: Array<SmsEntity>) {
-    val dao = SmsDatabase.getInstance(applicationContext).smsDao()
-    disposable.add(dao.insertMessages(sms.toList())
+    val dao = AwsDatabase.getInstance(applicationContext).smsDao()
+    disposable.add(dao.insert(sms.toList())
       .subscribeOn(Schedulers.io())
       .subscribe({
         Log.d("Room", "Successfully inserted!")
