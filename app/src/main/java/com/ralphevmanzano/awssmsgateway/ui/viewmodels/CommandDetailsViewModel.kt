@@ -7,13 +7,13 @@ import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.ralphevmanzano.awssmsgateway.data.StationsRepo
-import com.ralphevmanzano.awssmsgateway.models.Station
+import com.ralphevmanzano.awssmsgateway.data.CommandsRepo
+import com.ralphevmanzano.awssmsgateway.models.Command
 import com.ralphevmanzano.awssmsgateway.utils.Event
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class StationDetailsViewModel(application: Application) : AndroidViewModel(application), Observable {
+class CommandDetailsViewModel(application: Application) : AndroidViewModel(application), Observable {
   private val callbacks: PropertyChangeRegistry = PropertyChangeRegistry()
 
   override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {
@@ -24,17 +24,15 @@ class StationDetailsViewModel(application: Application) : AndroidViewModel(appli
     callbacks.remove(callback)
   }
 
-  private val stationsRepo: StationsRepo = StationsRepo(application)
+  private val commandsRepo: CommandsRepo = CommandsRepo(application)
   private val disposable = CompositeDisposable()
   private val _snackbarMessage = MutableLiveData<Event<String>>()
   private val _actionType = MutableLiveData<Int>()
   private val _areFieldsEditable = MutableLiveData<Boolean>()
 
-  private var stationId = -1
+  private var commandId = -1
   val title = MutableLiveData<String>()
-  val stationName = MutableLiveData<String>()
-  val mobileNo = MutableLiveData<String>()
-  val imei = MutableLiveData<String>()
+  val commandName = MutableLiveData<String>()
   val description = MutableLiveData<String>()
   val remarks = MutableLiveData<String>()
 
@@ -56,83 +54,77 @@ class StationDetailsViewModel(application: Application) : AndroidViewModel(appli
   }
 
   private fun isVerified(): Boolean {
-    return !(stationName.value.isNullOrEmpty() ||
-        mobileNo.value.isNullOrEmpty() ||
-        imei.value.isNullOrEmpty() ||
-        description.value.isNullOrEmpty() ||
-        remarks.value.isNullOrEmpty())
+    return !(commandName.value.isNullOrBlank() ||
+        description.value.isNullOrBlank() ||
+        remarks.value.isNullOrBlank())
   }
 
-  fun addStation() {
+  fun addCommand() {
     if (!isVerified()) {
       _snackbarMessage.postValue(Event("Please fill up all the fields"))
       return
     }
 
-    val station = Station(
-      stationName.value!!,
-      mobileNo.value!!,
-      imei.value!!,
+    val command = Command(
+      commandName.value!!,
       description.value!!,
       remarks.value!!
     )
 
-    disposable.add(stationsRepo.addStation(station)
+    disposable.add(commandsRepo.addCommand(command)
       .subscribeOn(Schedulers.io())
       .subscribe({
-        _snackbarMessage.postValue(Event("Station added successfully!"))
+        _snackbarMessage.postValue(Event("Command added successfully!"))
       }, { error ->
-        _snackbarMessage.postValue(Event("Error adding new station"))
-        Log.e("StationsViewModel", "Error adding new station ${error.localizedMessage}")
+        _snackbarMessage.postValue(Event("Error adding new command"))
+        Log.e("CommandsViewModel", "Error adding new command ${error.localizedMessage}")
       })
     )
   }
 
-  fun updateStation() {
+  fun updateCommand() {
     if (!isVerified()) {
       _snackbarMessage.postValue(Event("Please fill up all the fields"))
       return
     }
 
-    val station = Station(
-      stationName.value!!,
-      mobileNo.value!!,
-      imei.value!!,
+    val command = Command(
+      commandName.value!!,
       description.value!!,
       remarks.value!!
     )
 
-    if (stationId != -1) {
-      station.id = stationId
+    if (commandId != -1) {
+      command.id = commandId
     }
 
-    disposable.add(stationsRepo.updateStation(station)
+    Log.d("CommandDetailsVm", "Updating command")
+    disposable.add(commandsRepo.updateCommand(command)
       .subscribeOn(Schedulers.io())
       .subscribe({
-        _snackbarMessage.postValue(Event("Station updated successfully!"))
+        _snackbarMessage.postValue(Event("Command updated successfully!"))
       }, { error ->
-        _snackbarMessage.postValue(Event("Error updating new station"))
-        Log.e("StationsViewModel", "Error updating new station ${error.localizedMessage}")
-      })
-    )
+        _snackbarMessage.postValue(Event("Error updating new command"))
+        Log.e("CommandsViewModel", "Error updating new command ${error.localizedMessage}")
+      }))
   }
 
-  fun getStation(id: Int) {
-    disposable.add(stationsRepo.getStation(id)
+  fun getCommand(id: Int) {
+    disposable.add(commandsRepo.getCommand(id)
       .subscribeOn(Schedulers.io())
       .subscribe({
-        stationId = it.id
-        stationName.postValue(it.stationName)
-        mobileNo.postValue(it.mobileNo)
-        imei.postValue(it.imei)
+        commandId = it.id
+        commandName.postValue(it.commandName)
         description.postValue(it.description)
         remarks.postValue(it.remarks)
       }, {
-        _snackbarMessage.postValue(Event("Error getting station: ${it.localizedMessage}"))
-        Log.e("StationsViewModel", "Error getting station: ${it.localizedMessage}")
+        _snackbarMessage.postValue(Event("Error getting command: ${it.localizedMessage}"))
+        Log.e("CommandsViewModel", "Error getting command: ${it.localizedMessage}")
       })
     )
   }
 
-
+  override fun onCleared() {
+    disposable.clear()
+  }
 }

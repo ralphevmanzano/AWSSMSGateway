@@ -1,18 +1,21 @@
 package com.ralphevmanzano.awssmsgateway.ui.adapters
 
-import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import com.ralphevmanzano.awssmsgateway.BR
 import com.ralphevmanzano.awssmsgateway.R
-import com.ralphevmanzano.awssmsgateway.databinding.StationItemBinding
+import com.ralphevmanzano.awssmsgateway.databinding.StationSelectionItemBinding
 import com.ralphevmanzano.awssmsgateway.models.Station
 import com.ralphevmanzano.awssmsgateway.ui.viewholder.BaseViewHolder
-import com.ralphevmanzano.awssmsgateway.utils.OnMenuClickListener
 
-class StationsAdapter(private val listener: OnMenuClickListener, diffCallback: DiffUtil.ItemCallback<Station>): BaseAdapter<Station>(diffCallback) {
+class StationsSelectionAdapter(private val listener: OnStationCheckedListener, diffCallback: DiffUtil.ItemCallback<Station>) : BaseAdapter<Station>(diffCallback) {
+
+  interface OnStationCheckedListener {
+    fun onStationChecked(isChecked: Boolean, station: Station)
+  }
+
   override fun getItemViewType(position: Int): Int {
-    return R.layout.station_item
+    return R.layout.station_selection_item
   }
 
   override fun bind(binding: ViewDataBinding, position: Int) {
@@ -21,9 +24,13 @@ class StationsAdapter(private val listener: OnMenuClickListener, diffCallback: D
   }
 
   override fun setListeners(binding: ViewDataBinding, holder: BaseViewHolder) {
-    if (binding is StationItemBinding) {
-      binding.btnMenu.setOnClickListener {
-        listener.onMenuClick(holder.adapterPosition)
+    if (binding is StationSelectionItemBinding) {
+      binding.root.setOnClickListener {
+        binding.cb.performClick()
+      }
+
+      binding.cb.setOnCheckedChangeListener { _, b ->
+        listener.onStationChecked(b, getItem(holder.adapterPosition))
       }
     }
   }

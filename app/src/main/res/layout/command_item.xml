@@ -6,14 +6,17 @@
   <data>
 
     <variable
-      name="station"
-      type="com.ralphevmanzano.awssmsgateway.models.Station" />
+      name="command"
+      type="com.ralphevmanzano.awssmsgateway.models.Command" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:clickable="true"
+    android:orientation="vertical"
+    android:background="?attr/selectableItemBackground"
+    android:focusable="true">
 
     <TextView
       android:id="@+id/txtCommand"
@@ -23,36 +26,13 @@
       android:gravity="center"
       android:paddingTop="4dp"
       android:paddingBottom="4dp"
-      android:text="@{station.stationName}"
+      android:text="@{command.commandName}"
       android:textColor="@android:color/black"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/guideline2"
+      app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      tools:text="Station Name" />
-
-    <TextView
-      android:id="@+id/txtNum"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="1dp"
-      android:gravity="center"
-      android:paddingTop="4dp"
-      android:paddingBottom="4dp"
-      android:text="@{station.mobileNo}"
-      android:textColor="@android:color/black"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/guideline3"
-      app:layout_constraintStart_toStartOf="@+id/guideline2"
-      app:layout_constraintTop_toTopOf="parent"
-      tools:text="09179823734" />
-
-    <androidx.constraintlayout.widget.Guideline
-      android:id="@+id/guideline2"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      app:layout_constraintGuide_percent="0.45" />
+      tools:text="Command Name" />
 
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/guideline3"
@@ -77,15 +57,7 @@
       app:layout_constraintTop_toTopOf="parent" />
 
     <View
-      android:layout_width="1dp"
-      android:layout_height="0dp"
-      android:background="@android:color/black"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/guideline2"
-      app:layout_constraintStart_toStartOf="@+id/guideline2"
-      app:layout_constraintTop_toTopOf="parent" />
-
-    <View
+      android:id="@+id/view2"
       android:layout_width="1dp"
       android:layout_height="0dp"
       android:background="@android:color/black"

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+    <variable
+      name="station"
+      type="com.ralphevmanzano.awssmsgateway.models.Station" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <CheckBox
+      android:id="@+id/cb"
+      android:layout_width="wrap_content"
+      android:layout_height="0dp"
+      android:buttonTint="@color/btn_blue"
+      android:checked="@{station.isSelected}"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+      android:id="@+id/txtStation"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:paddingTop="8dp"
+      android:paddingBottom="8dp"
+      android:textColor="@android:color/black"
+      android:textSize="16sp"
+      android:text="@{station.stationName}"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:text="Matina Station" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

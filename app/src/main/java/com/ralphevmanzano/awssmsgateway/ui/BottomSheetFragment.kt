@@ -1,7 +1,6 @@
 package com.ralphevmanzano.awssmsgateway.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +8,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ralphevmanzano.awssmsgateway.R
 import kotlinx.android.synthetic.main.bottom_sheet.view.*
 
-class BottomSheetFragment(private val listener: OnStationClickListener): BottomSheetDialogFragment() {
+class BottomSheetFragment(private val listener: OnSheetClickListener): BottomSheetDialogFragment() {
 
-  interface OnStationClickListener {
+  interface OnSheetClickListener {
     fun onView()
     fun onEdit()
     fun onDelete()

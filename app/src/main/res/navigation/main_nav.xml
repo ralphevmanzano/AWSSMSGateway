@@ -8,7 +8,7 @@
   <fragment
     android:id="@+id/homeFragment"
     android:name="com.ralphevmanzano.awssmsgateway.ui.fragments.HomeFragment"
-    android:label="fragment_home"
+    android:label="AWS SMS Gateway"
     tools:layout="@layout/fragment_home">
     <action
       android:id="@+id/action_home_settings"
@@ -24,20 +24,35 @@
   <fragment
     android:id="@+id/maintenanceFragment"
     android:name="com.ralphevmanzano.awssmsgateway.ui.fragments.MaintenanceFragment"
-    android:label="fragment_maintenance"
+    android:label="Maintenance"
     tools:layout="@layout/fragment_maintenance">
     <action
-      android:id="@+id/action_maintenance_stations"
+      android:id="@+id/actionStations"
       app:destination="@id/stationsFragment" />
+    <action
+      android:id="@+id/actionCommands"
+      app:destination="@id/commandsFragment" />
   </fragment>
   <fragment
     android:id="@+id/stationsFragment"
     android:name="com.ralphevmanzano.awssmsgateway.ui.fragments.StationsFragment"
-    android:label="fragment_stations"
-    tools:layout="@layout/fragment_stations">
+    android:label="Stations"
+    tools:layout="@layout/fragment_list">
     <action
-      android:id="@+id/detailsAction"
+      android:id="@+id/stationDetailsAction"
       app:destination="@id/stationDetailsFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/commandsFragment"
+    android:name="com.ralphevmanzano.awssmsgateway.ui.fragments.CommandsFragment"
+    android:label="fragment_commands"
+    tools:layout="@layout/fragment_list">
+    <action
+      android:id="@+id/commandDetailsAction"
+      app:destination="@id/commandDetailsFragment" />
+    <action
+      android:id="@+id/actionSendCommand"
+      app:destination="@id/sendCommandFragment" />
   </fragment>
   <fragment
     android:id="@+id/stationDetailsFragment"
@@ -53,4 +68,35 @@
       android:defaultValue="-1"
       app:argType="integer" />
   </fragment>
+  <fragment
+    android:id="@+id/commandDetailsFragment"
+    android:name="com.ralphevmanzano.awssmsgateway.ui.fragments.CommandDetailsFragment"
+    android:label="CommandDetailsFragment"
+    tools:layout="@layout/fragment_command_details">
+    <argument
+      android:name="type"
+      app:argType="integer"
+      android:defaultValue="-1" />
+    <argument
+      android:name="id"
+      app:argType="integer"
+      android:defaultValue="-1" />
+  </fragment>
+  <fragment
+    android:id="@+id/sendCommandFragment"
+    android:name="com.ralphevmanzano.awssmsgateway.ui.fragments.SendCommandFragment"
+    android:label="Send Command"
+    tools:layout="@layout/fragment_send_command">
+    <argument
+      android:name="command"
+      app:argType="string" />
+    <action
+      android:id="@+id/actionStationsSelection"
+      app:destination="@id/stationsSelectionFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/stationsSelectionFragment"
+    android:name="com.ralphevmanzano.awssmsgateway.ui.fragments.StationsSelectionFragment"
+    android:label="Select Stations"
+    tools:layout="@layout/fragment_stations_selection" />
 </navigation>

@@ -10,7 +10,13 @@ data class Station(
     val imei: String,
     val description: String,
     val remarks: String
-) {
+) : Comparable<Station> {
+
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
+    var isSelected: Boolean = false
+
+    override fun compareTo(other: Station): Int {
+        return stationName.compareTo(other.stationName)
+    }
 }

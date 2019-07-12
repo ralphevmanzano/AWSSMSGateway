@@ -13,6 +13,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ralphevmanzano.awssmsgateway.R
 import com.ralphevmanzano.awssmsgateway.models.SmsModel
@@ -22,6 +27,7 @@ import com.ralphevmanzano.awssmsgateway.utils.EXIT_APP_ACTION
 import com.ralphevmanzano.awssmsgateway.utils.START_SERVICE
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,6 +35,8 @@ class MainActivity : AppCompatActivity() {
   private lateinit var rxPermissions: RxPermissions
   private lateinit var disposable: Disposable
   private lateinit var smsReceiveBroadcastReceiver: SmsReceiveBroadcastReceiver
+  private lateinit var appBarConfig: AppBarConfiguration
+
   private val exitBroadcastReceiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
       val stopServiceIntent = Intent(this@MainActivity, AwsService::class.java)
@@ -49,9 +57,20 @@ class MainActivity : AppCompatActivity() {
     smsReceiveBroadcastReceiver = SmsReceiveBroadcastReceiver()
     registerReceiver(exitBroadcastReceiver, IntentFilter(EXIT_APP_ACTION))
 
+    val host = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+    val navController = host.navController
+    appBarConfig = AppBarConfiguration(navController.graph)
+
+    setSupportActionBar(toolbar)
+    setupActionBarWithNavController(navController, appBarConfig)
+
     requestReadAndSendSmsPermission()
     initFCM()
     initAwsService()
+  }
+
+  override fun onSupportNavigateUp(): Boolean {
+    return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfig)
   }
 
   private fun initAwsService() {

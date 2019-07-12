@@ -16,8 +16,7 @@
     android:paddingTop="12dp"
     android:paddingBottom="12dp"
     android:textColor="@android:color/black"
-    android:gravity="center"
-    android:text="@string/list_of_stations_and"/>
+    android:gravity="center"/>
 
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/rv"

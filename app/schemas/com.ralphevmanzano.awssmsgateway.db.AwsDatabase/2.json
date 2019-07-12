@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "18975fb1f87018091fd38c2195e98bba",
+    "identityHash": "da252daaf3e9129b5a74af7916a51e93",
     "entities": [
       {
         "tableName": "messages",
@@ -85,12 +85,50 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "command",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `commandName` TEXT NOT NULL, `description` TEXT NOT NULL, `remarks` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "commandName",
+            "columnName": "commandName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remarks",
+            "columnName": "remarks",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '18975fb1f87018091fd38c2195e98bba')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'da252daaf3e9129b5a74af7916a51e93')"
     ]
   }
 }

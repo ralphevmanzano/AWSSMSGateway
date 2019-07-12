@@ -12,20 +12,22 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.ralphevmanzano.awssmsgateway.R
-import com.ralphevmanzano.awssmsgateway.databinding.FragmentStationDetailsBinding
-import com.ralphevmanzano.awssmsgateway.ui.viewmodels.StationDetailsViewModel
+import com.ralphevmanzano.awssmsgateway.databinding.FragmentCommandDetailsBinding
+import com.ralphevmanzano.awssmsgateway.ui.viewmodels.CommandDetailsViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_station_details.*
 
-class StationDetailsFragment : Fragment() {
+class CommandDetailsFragment : Fragment() {
 
-  private val args: StationDetailsFragmentArgs by navArgs()
-  private lateinit var binding: FragmentStationDetailsBinding
-  private lateinit var viewModel: StationDetailsViewModel
+  private val args: CommandDetailsFragmentArgs by navArgs()
+  private lateinit var binding: FragmentCommandDetailsBinding
+  private lateinit var viewModel: CommandDetailsViewModel
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                            savedInstanceState: Bundle?): View? {
-    binding = DataBindingUtil.inflate(inflater, R.layout.fragment_station_details, container,false)
+
+  override fun onCreateView(
+    inflater: LayoutInflater, container: ViewGroup?,
+    savedInstanceState: Bundle?): View? {
+    binding = DataBindingUtil.inflate(inflater, R.layout.fragment_command_details, container, false)
     return binding.root
   }
 
@@ -33,12 +35,11 @@ class StationDetailsFragment : Fragment() {
     super.onStart()
     activity?.toolbar?.let {
       when(args.type) {
-        StationsFragment.STATIONS_VIEW-> it.title = getString(R.string.view_station)
-        StationsFragment.STATIONS_EDIT -> it.title = getString(R.string.edit_station)
-        StationsFragment.STATIONS_ADD -> it.title = getString(R.string.add_new_station)
+        CommandsFragment.COMMAND_VIEW -> it.title = getString(R.string.view_command)
+        CommandsFragment.COMMAND_EDIT -> it.title = getString(R.string.edit_command)
+        CommandsFragment.COMMAND_ADD -> it.title = getString(R.string.add_new_command)
       }
     }
-
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,15 +48,21 @@ class StationDetailsFragment : Fragment() {
 
   private fun initListeners() {
     btnSave.setOnClickListener {
-      if (args.type == StationsFragment.STATIONS_ADD) viewModel.addStation()
-      else if (args.type == StationsFragment.STATIONS_EDIT) viewModel.updateStation()
+
+      if (args.type == CommandsFragment.COMMAND_ADD) {
+        viewModel.addCommand()
+
+      }
+      else if (args.type == CommandsFragment.COMMAND_EDIT) {
+        viewModel.updateCommand()
+      }
     }
     btnCancel.setOnClickListener { findNavController().popBackStack() }
   }
 
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
-    viewModel = ViewModelProviders.of(this).get(StationDetailsViewModel::class.java)
+    viewModel = ViewModelProviders.of(this).get(CommandDetailsViewModel::class.java)
 
     binding.viewModel = viewModel
     binding.lifecycleOwner = viewLifecycleOwner
@@ -64,17 +71,17 @@ class StationDetailsFragment : Fragment() {
 
     viewModel.actionType.observe(this, Observer {
       when(it) {
-        StationsFragment.STATIONS_VIEW -> {
+        CommandsFragment.COMMAND_VIEW -> {
           viewModel.title.value = getString(R.string.view)
           viewModel.setAreFieldsEditable(false)
-          viewModel.getStation(args.id)
+          viewModel.getCommand(args.id)
         }
-        StationsFragment.STATIONS_EDIT -> {
+        CommandsFragment.COMMAND_EDIT  -> {
           viewModel.title.value = getString(R.string.edit)
           viewModel.setAreFieldsEditable(true)
-          viewModel.getStation(args.id)
+          viewModel.getCommand(args.id)
         }
-        StationsFragment.STATIONS_ADD -> {
+        CommandsFragment.COMMAND_ADD -> {
           viewModel.title.value = getString(R.string.add_new)
           viewModel.setAreFieldsEditable(true)
         }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 
 import com.ralphevmanzano.awssmsgateway.R
 import kotlinx.android.synthetic.main.fragment_maintenance.*
@@ -24,7 +25,11 @@ class MaintenanceFragment : Fragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     btnStations.setOnClickListener {
-      Navigation.findNavController(it).navigate(R.id.action_maintenance_stations)
+      findNavController().navigate(R.id.actionStations)
+    }
+
+    btnCommands.setOnClickListener {
+      findNavController().navigate(R.id.actionCommands)
     }
   }
 

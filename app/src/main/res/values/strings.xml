@@ -35,5 +35,19 @@
   <string name="are_you_sure_you_want_to_delete">Are you sure you want to delete %s?</string>
   <string name="yes">Yes</string>
   <string name="no">No</string>
+  <string name="command_name">Command Name</string>
+  <string name="send_command">Send Command</string>
+  <string name="stations">Stations</string>
+  <string name="press_to_select_station">Press to select station</string>
+  <string name="commands">Commands</string>
+  <string name="send">Send</string>
+  <string name="select_stations">Select Stations</string>
+  <string name="done">Done</string>
+  <string name="view_command">View Command</string>
+  <string name="edit_command">Edit Command</string>
+  <string name="add_new_command">Add New Command</string>
+  <string name="view_station">View Station</string>
+  <string name="edit_station">Edit Station</string>
+  <string name="add_new_station">Add New Station</string>
 
 </resources>

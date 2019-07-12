@@ -16,12 +16,20 @@ abstract class BaseAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) : ListAdap
 
   abstract fun bind(binding: ViewDataBinding, position: Int)
 
+  abstract fun setListeners(
+    binding: ViewDataBinding,
+    holder: BaseViewHolder
+  )
+
   abstract override fun getItemViewType(position: Int): Int
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
     val inflater = LayoutInflater.from(parent.context)
     binding = DataBindingUtil.inflate(inflater, viewType, parent, false)
-    return BaseViewHolder(this.binding, onItemClickListener)
+    val holder = BaseViewHolder(binding, onItemClickListener)
+    setListeners(binding, holder)
+
+    return holder
   }
 
   fun setOnItemclickListener(listener: OnItemClickListener?) {

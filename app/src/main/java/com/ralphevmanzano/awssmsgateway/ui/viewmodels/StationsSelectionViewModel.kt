@@ -5,45 +5,22 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel;
 import com.ralphevmanzano.awssmsgateway.data.StationsRepo
 import com.ralphevmanzano.awssmsgateway.models.Station
 import com.ralphevmanzano.awssmsgateway.utils.Event
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class StationsViewModel(application: Application) : AndroidViewModel(application) {
+class StationsSelectionViewModel(application: Application) : AndroidViewModel(application) {
   private val stationsRepo: StationsRepo = StationsRepo(application)
   private val disposable = CompositeDisposable()
 
-  private val _openMoreDialog = MutableLiveData<Event<Int>>()
-  private val _navigateToDetails = MutableLiveData<Event<Int>>()
-  private val _selectedItem = MutableLiveData<Int>()
-  private val _snackbarMessage = MutableLiveData<Event<String>>()
   private val _stations = MutableLiveData<List<Station>>()
-
-  val openMoreDialog: LiveData<Event<Int>>
-    get() = _openMoreDialog
-
-  val navigateToDetails: LiveData<Event<Int>>
-    get() = _navigateToDetails
-
-  val selectedItem: LiveData<Int>
-    get() = _selectedItem
+  private val _snackbarMessage = MutableLiveData<Event<String>>()
 
   val snackbarMessage: LiveData<Event<String>>
     get() = _snackbarMessage
-
-  fun selectItem(id: Int) {
-    _selectedItem.value = id
-  }
-
-  fun onDetailsClick(id: Int) {
-    _navigateToDetails.value = Event(id)
-  }
-
-  fun onOpenDialogClick(itemId: Int) {
-    _openMoreDialog.value = Event(itemId)  // Trigger the event by setting a new Event as a new value
-  }
 
   fun getStations(): LiveData<List<Station>> {
     disposable.add(stationsRepo.getStations()
@@ -59,14 +36,14 @@ class StationsViewModel(application: Application) : AndroidViewModel(application
     return _stations
   }
 
-  fun deleteStation(station: Station) {
-    disposable.add(stationsRepo.deleteStation(station)
+  fun selectStation(isChecked: Boolean, station: Station) {
+    station.isSelected = isChecked
+
+    disposable.add(stationsRepo.updateStation(station)
       .subscribeOn(Schedulers.io())
-      .subscribe({
-        _snackbarMessage.postValue(Event("Successfully deleted ${station.stationName}!"))
-      }, { error ->
-        _snackbarMessage.postValue(Event("Error deleting ${station.stationName}"))
-        Log.e("StationsViewModel", "Error deleting station: ${error.localizedMessage}")
+      .subscribe({},{
+        _snackbarMessage.postValue(Event("An unexpected error occurred"))
+        Log.e("StationsSelectionVM", "Error selecting station ${it.localizedMessage}")
       }))
   }
 

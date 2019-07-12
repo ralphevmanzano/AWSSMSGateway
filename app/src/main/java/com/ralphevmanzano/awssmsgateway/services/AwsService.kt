@@ -59,11 +59,11 @@ class AwsService: Service(), SmsSendBroadcastReceiver.SmsSentListener {
     registerReceiver(smsProcessReceiver, IntentFilter(SMS_PROCESS_ACTION))
     notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    pendingSmsDisposable = Observable.interval(10, 60, TimeUnit.SECONDS)
-      .subscribe {
-        Log.d("PendingSms", "***********Monitoring Pendin SMS*************")
-        checkPendingSms()
-      }
+//    pendingSmsDisposable = Observable.interval(10, 60, TimeUnit.SECONDS)
+//      .subscribe {
+////        Log.d("PendingSms", "***********Monitoring Pendin SMS*************")
+//        checkPendingSms()
+//      }
   }
 
   override fun onDestroy() {
@@ -115,28 +115,28 @@ class AwsService: Service(), SmsSendBroadcastReceiver.SmsSentListener {
   }
 
   private fun checkPendingSms() {
-    Log.d("PendingSms", "Checking Database SMS")
+//    Log.d("PendingSms", "Checking Database SMS")
 
     val dao = AwsDatabase.getInstance(applicationContext).smsDao()
     disposable.add(dao.getMessages()
       .subscribeOn(Schedulers.io())
       .subscribe({ sms ->
         sms?.let {
-          Log.d("Sms", "Sms Size = ${sms.size}")
+//          Log.d("Sms", "Sms Size = ${sms.size}")
           messages.clear()
           for (s in sms) {
-            Log.d("Sms", "Sms Size = ${sms.size}")
+//            Log.d("Sms", "Sms Size = ${sms.size}")
             messages.add(s)
           }
           processSms()
         }
       }, { error ->
-        Log.e("PendingSms", "Failed fetching entries of database ${error.localizedMessage}")
+//        Log.e("PendingSms", "Failed fetching entries of database ${error.localizedMessage}")
       }))
   }
 
   private fun processSms() {
-    Log.d("PendingSms", "Processing SMS")
+//    Log.d("PendingSms", "Processing SMS")
     if (messages.isNotEmpty()) {
       messages.remove()?.let { startSmsWork(it) }
     }

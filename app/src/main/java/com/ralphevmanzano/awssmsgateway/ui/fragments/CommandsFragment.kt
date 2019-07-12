@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,37 +11,35 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.NavHostFragment.findNavController
-import androidx.navigation.fragment.navArgs
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.ralphevmanzano.awssmsgateway.R
-import com.ralphevmanzano.awssmsgateway.models.Station
+import com.ralphevmanzano.awssmsgateway.models.Command
 import com.ralphevmanzano.awssmsgateway.ui.BottomSheetFragment
-import com.ralphevmanzano.awssmsgateway.ui.adapters.StationsAdapter
-import com.ralphevmanzano.awssmsgateway.ui.viewmodels.StationsViewModel
+import com.ralphevmanzano.awssmsgateway.ui.adapters.CommandsAdapter
+import com.ralphevmanzano.awssmsgateway.ui.viewmodels.CommandsViewModel
+import com.ralphevmanzano.awssmsgateway.utils.CommandDiffUtil
 import com.ralphevmanzano.awssmsgateway.utils.ItemDecoration
 import com.ralphevmanzano.awssmsgateway.utils.OnMenuClickListener
-import com.ralphevmanzano.awssmsgateway.utils.StationDiffUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_list.*
 
-class StationsFragment : Fragment(), OnMenuClickListener,
-  BottomSheetFragment.OnSheetClickListener {
+class CommandsFragment : Fragment(), OnMenuClickListener, BottomSheetFragment.OnSheetClickListener, CommandsAdapter.OnCommandClickListener {
 
-  private lateinit var adapter: StationsAdapter
-  private lateinit var viewModel: StationsViewModel
-  private var stations: ArrayList<Station> = ArrayList()
+  private lateinit var adapter: CommandsAdapter
+  private lateinit var viewModel: CommandsViewModel
+  private var commands: ArrayList<Command> = ArrayList()
 
   companion object {
-    const val STATIONS_VIEW = 0
-    const val STATIONS_EDIT = 1
-    const val STATIONS_ADD = 2
+    const val COMMAND_VIEW = 0
+    const val COMMAND_EDIT = 1
+    const val COMMAND_ADD = 2
   }
 
   override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
+    inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
     return inflater.inflate(R.layout.fragment_list, container, false)
@@ -50,19 +47,20 @@ class StationsFragment : Fragment(), OnMenuClickListener,
 
   override fun onStart() {
     super.onStart()
-    activity?.toolbar?.title = getString(R.string.stations)
+    activity?.toolbar?.title = getString(R.string.commands)
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    txtTitle.text = getString(R.string.list_of_stations)
+    txtTitle.text = getString(R.string.list_of_commands)
     initRv()
     initListeners()
   }
 
   private fun initRv() {
-    adapter = StationsAdapter(this, StationDiffUtil())
+    adapter = CommandsAdapter(this, CommandDiffUtil())
+    adapter.setOnCommandClickListener(this)
 
-    val drawable = context?.let { ContextCompat.getDrawable(it, R.drawable.divider_black) }
+    val drawable = context?.let { ContextCompat.getDrawable(it, R.drawable.divider_black)}
     drawable?.let { rv.addItemDecoration(ItemDecoration(it)) }
 
     rv.layoutManager = LinearLayoutManager(context)
@@ -72,39 +70,32 @@ class StationsFragment : Fragment(), OnMenuClickListener,
   private fun initListeners() {
     btnAdd.setOnClickListener {
       viewModel.selectItem(-1)
-      viewModel.onDetailsClick(STATIONS_ADD)
+      viewModel.onNavigateToDetails(COMMAND_ADD)
     }
   }
 
-
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
-    viewModel = ViewModelProviders.of(this).get(StationsViewModel::class.java)
+    viewModel = ViewModelProviders.of(this).get(CommandsViewModel::class.java)
 
-    viewModel.getStations().observe(this, Observer {
+    viewModel.getCommands().observe(this, Observer {
       it?.let {
         adapter.submitList(it)
 
-        stations.clear()
-        stations.addAll(it)
+        commands.clear()
+        commands.addAll(it)
       }
     })
 
     viewModel.navigateToDetails.observe(this, Observer {
-      Log.d("Stations", "Navigate to edit click")
       it.getContentIfNotHandled()?.let { type ->
-        val action =
-          viewModel.selectedItem.value?.let { pos ->
-            var id = -1
-            if (pos != -1) {
-              id = stations[pos].id
-            }
-            StationsFragmentDirections.stationDetailsAction(
-              type,
-              id
-            )
-          }
-        action?.let { act -> findNavController(this).navigate(act) }
+        navigateToDetails(type)
+      }
+    })
+
+    viewModel.navigateToSend.observe(this, Observer {
+      it.getContentIfNotHandled()?.let { command ->
+        navigateToSendCommand(command)
       }
     })
 
@@ -114,35 +105,52 @@ class StationsFragment : Fragment(), OnMenuClickListener,
       }
     })
 
-
     viewModel.snackbarMessage.observe(this, Observer {
       it.getContentIfNotHandled()?.let { msg ->
         showSnackbar(msg)
       }
     })
+  }
 
+  private fun navigateToDetails(type: Int) {
+    val action =
+      viewModel.selectedItem.value?.let { pos ->
+        var id = -1
+        if (pos != -1) {
+          id = commands[pos].id
+        }
+        CommandsFragmentDirections.commandDetailsAction(
+          type,
+          id
+        )
+      }
+    action?.let { act -> NavHostFragment.findNavController(this).navigate(act) }
+  }
+
+  private fun navigateToSendCommand(command: Command) {
+    val action = CommandsFragmentDirections.actionSendCommand(command.commandName)
+    findNavController().navigate(action)
   }
 
   override fun onView() {
-    viewModel.selectedItem.value?.let { viewModel.onDetailsClick(STATIONS_VIEW) }
+    viewModel.selectedItem.value?.let { viewModel.onNavigateToDetails(COMMAND_VIEW) }
   }
 
   override fun onEdit() {
-    viewModel.selectedItem.value?.let { viewModel.onDetailsClick(STATIONS_EDIT) }
+    viewModel.selectedItem.value?.let { viewModel.onNavigateToDetails(COMMAND_EDIT) }
   }
 
   override fun onDelete() {
     showDeleteDialog()
   }
 
-  private fun showSnackbar(msg: String) {
-    view?.let { Snackbar.make(it, msg, Snackbar.LENGTH_SHORT).show() }
-  }
-
-  @SuppressLint("InflateParams")
   override fun onMenuClick(position: Int) {
     viewModel.onOpenDialogClick(position)
     viewModel.selectItem(position)
+  }
+
+  override fun onCommandClick(command: Command) {
+    viewModel.onNavigateSendClick(command)
   }
 
   @SuppressLint("InflateParams")
@@ -151,19 +159,23 @@ class StationsFragment : Fragment(), OnMenuClickListener,
     fragmentManager?.let { bottomSheetFragment.show(it, bottomSheetFragment.tag) }
   }
 
+  private fun showSnackbar(msg: String) {
+    view?.let { Snackbar.make(it, msg, Snackbar.LENGTH_SHORT).show() }
+  }
+
   private fun showDeleteDialog() {
     val builder = AlertDialog.Builder(context)
-    var station: Station? = null
+    var command: Command? = null
     viewModel.selectedItem.value?.let { pos ->
-      station = stations[pos]
+      command = commands[pos]
     }
 
     with(builder) {
       setIcon(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_close) })
       setTitle(getString(R.string.delete_station))
-      setMessage(getString(R.string.are_you_sure_you_want_to_delete, station?.stationName))
+      setMessage(getString(R.string.are_you_sure_you_want_to_delete, command?.commandName))
       setPositiveButton(R.string.yes) { _, _ ->
-        station?.let { viewModel.deleteStation(it) }
+        command?.let { viewModel.deleteStation(it) }
       }
       setNegativeButton(R.string.no) { _, _ -> }
     }
@@ -179,5 +191,4 @@ class StationsFragment : Fragment(), OnMenuClickListener,
       btnNegative.setTextColor(ContextCompat.getColor(context!!, R.color.btn_red))
     }
   }
-
 }

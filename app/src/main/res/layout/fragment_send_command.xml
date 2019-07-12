@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/layout">
+
+  <data>
+    <variable
+      name="viewModel"
+      type="com.ralphevmanzano.awssmsgateway.ui.viewmodels.SendCommandViewModel" />
+  </data>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragments.SendCommandFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:clipToPadding="false"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp">
+
+      <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="@string/send_command"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <TextView
+        android:id="@+id/txtStations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/stations"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/txtTitle"
+        app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+
+
+      <FrameLayout
+        android:id="@+id/fl"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/black_border"
+        android:clickable="true"
+        android:focusable="true"
+        android:foregroundGravity="center"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/txtTitle"
+        app:layout_constraintStart_toStartOf="@+id/txtTitle"
+        app:layout_constraintTop_toBottomOf="@+id/txtStations">
+
+        <TextView
+          android:id="@+id/txtChipInstructions"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:text="@string/press_to_select_station"
+          android:textColor="@android:color/black" />
+
+        <com.google.android.material.chip.ChipGroup
+          android:id="@+id/cg"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          app:chipSpacingVertical="8dp" />
+
+      </FrameLayout>
+
+
+      <TextView
+        android:id="@+id/txtCommand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/commands"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/fl"
+        app:layout_constraintTop_toBottomOf="@+id/fl" />
+
+      <EditText
+        android:id="@+id/editText2"
+        style="@style/Aws.FieldSmall"
+        android:layout_width="0dp"
+        android:layout_height="88dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:gravity="start"
+        android:text="@={viewModel.command}"
+        android:inputType="textPersonName"
+        android:scrollHorizontally="false"
+        app:layout_constraintEnd_toEndOf="@+id/fl"
+        app:layout_constraintStart_toStartOf="@+id/fl"
+        app:layout_constraintTop_toBottomOf="@+id/txtCommand" />
+
+      <Button
+        android:id="@+id/btnSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/btn_green"
+        android:text="@string/send"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/editText2"
+        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+  </ScrollView>
+</layout>
