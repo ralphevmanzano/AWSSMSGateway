@@ -36,7 +36,7 @@ class AwsService: Service(), SmsSendBroadcastReceiver.SmsSentListener {
   private var notificationManager: NotificationManager? = null
   private val disposable = CompositeDisposable()
   private var smsSendBroadcastReceiver: SmsSendBroadcastReceiver? = null
-  private var messages: Queue<SmsEntity> = ArrayDeque()
+  private val messages: Queue<SmsEntity> = ArrayDeque()
   private var pendingSmsDisposable: Disposable? = null
 
   private val smsProcessReceiver = object : BroadcastReceiver() {
@@ -59,11 +59,11 @@ class AwsService: Service(), SmsSendBroadcastReceiver.SmsSentListener {
     registerReceiver(smsProcessReceiver, IntentFilter(SMS_PROCESS_ACTION))
     notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-//    pendingSmsDisposable = Observable.interval(10, 60, TimeUnit.SECONDS)
-//      .subscribe {
-////        Log.d("PendingSms", "***********Monitoring Pendin SMS*************")
-//        checkPendingSms()
-//      }
+    pendingSmsDisposable = Observable.interval(10, 60, TimeUnit.SECONDS)
+      .subscribe {
+//        Log.d("PendingSms", "***********Monitoring Pendin SMS*************")
+        checkPendingSms()
+      }
   }
 
   override fun onDestroy() {
@@ -131,7 +131,7 @@ class AwsService: Service(), SmsSendBroadcastReceiver.SmsSentListener {
           processSms()
         }
       }, { error ->
-//        Log.e("PendingSms", "Failed fetching entries of database ${error.localizedMessage}")
+        Log.e("PendingSms", "Failed fetching entries of database ${error.localizedMessage}")
       }))
   }
 

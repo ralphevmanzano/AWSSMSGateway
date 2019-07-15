@@ -57,7 +57,6 @@
   <fragment
     android:id="@+id/stationDetailsFragment"
     android:name="com.ralphevmanzano.awssmsgateway.ui.fragments.StationDetailsFragment"
-    android:label="action_stations_station_det"
     tools:layout="@layout/fragment_station_details">
     <argument
       android:name="type"
@@ -71,7 +70,6 @@
   <fragment
     android:id="@+id/commandDetailsFragment"
     android:name="com.ralphevmanzano.awssmsgateway.ui.fragments.CommandDetailsFragment"
-    android:label="CommandDetailsFragment"
     tools:layout="@layout/fragment_command_details">
     <argument
       android:name="type"

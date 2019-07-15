@@ -1,22 +1,19 @@
 package com.ralphevmanzano.awssmsgateway.ui.fragments
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-
 import com.ralphevmanzano.awssmsgateway.R
 import com.ralphevmanzano.awssmsgateway.models.Station
 import com.ralphevmanzano.awssmsgateway.ui.adapters.StationsSelectionAdapter
-import com.ralphevmanzano.awssmsgateway.ui.viewmodels.StationSelectionSharedViewModel
 import com.ralphevmanzano.awssmsgateway.ui.viewmodels.StationsSelectionViewModel
 import com.ralphevmanzano.awssmsgateway.utils.ItemDecoration
 import com.ralphevmanzano.awssmsgateway.utils.StationDiffUtil
@@ -80,8 +77,4 @@ class StationsSelectionFragment : Fragment(), StationsSelectionAdapter.OnStation
   private fun showSnackbar(msg: String) {
     view?.let { Snackbar.make(it, msg, Snackbar.LENGTH_SHORT).show() }
   }
-}
-
-fun Station.print() {
-  Log.d("Station", stationName)
 }

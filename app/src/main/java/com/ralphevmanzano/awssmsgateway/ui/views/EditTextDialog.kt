@@ -1,5 +1,6 @@
 package com.ralphevmanzano.awssmsgateway.ui.views
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
 import android.text.InputType
@@ -11,8 +12,6 @@ import com.ralphevmanzano.awssmsgateway.R
 
 class EditTextDialog : DialogFragment() {
   companion object {
-    private const val TAG = "EditTextDialog"
-
     private const val EXTRA_TITLE = "title"
     private const val EXTRA_HINT = "hint"
     private const val EXTRA_MULTILINE = "multiline"
@@ -35,11 +34,12 @@ class EditTextDialog : DialogFragment() {
   var onOk: (() -> Unit)? = null
   var onCancel: (() -> Unit)? = null
 
+  @SuppressLint("InflateParams")
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val title = arguments?.getString(EXTRA_TITLE)
     val hint = arguments?.getString(EXTRA_HINT)
     val text: String? = arguments?.getString(EXTRA_TEXT)
-    val isMiltiline = arguments?.getBoolean(EXTRA_MULTILINE) ?: false
+    val isMultiline = arguments?.getBoolean(EXTRA_MULTILINE) ?: false
 
     // StackOverflowError
     // val view = layoutInflater.inflate(R.layout.dialog_edit_text, null)
@@ -48,7 +48,7 @@ class EditTextDialog : DialogFragment() {
     editText = view.findViewById(R.id.editText)
     editText.hint = hint
 
-    if (isMiltiline) {
+    if (isMultiline) {
       editText.minLines = 3
       editText.inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
     }

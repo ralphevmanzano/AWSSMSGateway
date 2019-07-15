@@ -22,7 +22,9 @@ class SmsSendBroadcastReceiver : BroadcastReceiver() {
         when (resultCode) {
           Activity.RESULT_OK -> {
             Log.d("SendBroadcast", "Sent: OK")
-            context?.let {
+
+            smsListener?.onSmsSent()
+            /*context?.let {
               val dao = AwsDatabase.getInstance(it).smsDao()
               smsId?.let { id ->
                 dao.delete(id)
@@ -35,7 +37,7 @@ class SmsSendBroadcastReceiver : BroadcastReceiver() {
                     smsListener?.onSmsFailed()
                   })
               }
-            }
+            }*/
           }
           else -> {
             Log.e("SendBroadcast", "Sent: FAILED $resultCode")

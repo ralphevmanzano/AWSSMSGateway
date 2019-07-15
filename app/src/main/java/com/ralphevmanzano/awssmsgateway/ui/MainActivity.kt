@@ -65,8 +65,8 @@ class MainActivity : AppCompatActivity() {
     setupActionBarWithNavController(navController, appBarConfig)
 
     requestReadAndSendSmsPermission()
-    initFCM()
-    initAwsService()
+//    initFCM()
+//    initAwsService()isMiltiline
   }
 
   override fun onSupportNavigateUp(): Boolean {

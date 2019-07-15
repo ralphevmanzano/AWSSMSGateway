@@ -55,7 +55,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:inputType="@{safeUnbox(viewModel.areFieldsEditable) ? InputType.TYPE_TEXT_VARIATION_PERSON_NAME : InputType.TYPE_NULL}"
+        android:inputType="@{safeUnbox(viewModel.areFieldsEditable) ? InputType.TYPE_TEXT_FLAG_CAP_WORDS : InputType.TYPE_NULL}"
         android:text="@={viewModel.stationName}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

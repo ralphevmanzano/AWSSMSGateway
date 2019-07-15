@@ -49,5 +49,8 @@
   <string name="view_station">View Station</string>
   <string name="edit_station">Edit Station</string>
   <string name="add_new_station">Add New Station</string>
+  <string name="please_select_a_station">Please select a station to send the command</string>
+  <string name="successfully_sent_command">Successfully sent command to stations!</string>
+  <string name="error_sendind_command">Error sending command to stations</string>
 
 </resources>
