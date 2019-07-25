@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.ralphevmanzano.awssmsgateway.utils.DELIVERED_ACTION
-import com.ralphevmanzano.awssmsgateway.utils.DELIVERED_INTENT_EXTRA
 import com.ralphevmanzano.awssmsgateway.utils.SENT_ACTION
 
 class SmsSendBroadcastReceiver : BroadcastReceiver() {
