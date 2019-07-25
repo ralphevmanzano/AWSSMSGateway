@@ -17,7 +17,10 @@ import com.google.gson.Gson
 import com.ralphevmanzano.awssmsgateway.models.SmsModel
 import com.ralphevmanzano.awssmsgateway.models.WeatherDataModel
 import com.ralphevmanzano.awssmsgateway.utils.API_WORKER_INPUT_KEY
+import com.ralphevmanzano.awssmsgateway.utils.crc.AlgoParams
+import com.ralphevmanzano.awssmsgateway.utils.crc.CrcCalculator
 import com.ralphevmanzano.awssmsgateway.workers.ApiWorker
+import java.nio.charset.Charset
 import java.util.*
 
 
@@ -108,11 +111,26 @@ class SmsReceiveBroadcastReceiver : BroadcastReceiver() {
             smsListener!!.onTextReceived(sms)
           }
 
-          startApiWork(jsonWeather)
+          Log.d("Checksum", "Expected checksum: ${separated[14]}")
+          val expectedChecksum = separated[14]
+          val copyOfList = separated.toMutableList()
+          copyOfList.removeAt(copyOfList.size - 1)
+          val data = copyOfList.joinToString(",", prefix = "(", postfix = ")")
+          Log.d("Checksum", "To checksum: $data")
+          if (expectedChecksum == generateCheckSum(data)) {
+            startApiWork(jsonWeather)
 //          initNotification()
+          }
         }
       }
     }
+  }
+
+  private fun generateCheckSum(data: String): String {
+    val algoParams = AlgoParams("CRC-8", 8, 0x7, 0x0, false, false, 0x0, 0xF4)
+    val calculator = CrcCalculator(algoParams)
+    Log.d("Checksum", "Generated checksum: ${calculator.Calc(data.toByteArray())}")
+    return calculator.Calc(data.toByteArray())
   }
 
   private fun startApiWork(json: String) {

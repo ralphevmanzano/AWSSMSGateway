@@ -29,12 +29,10 @@ class SmsWorker(ctx: Context, workerParams: WorkerParameters) : Worker(ctx, work
     try {
       Log.d("SmsWorker", "Sending message ${msg.id}....")
       val sentIntent = Intent(SENT_ACTION)
-      sentIntent.putExtra(SENT_INTENT_EXTRA, msg.id)
       val sentPI = PendingIntent.getBroadcast(applicationContext, 0, sentIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
       val deliveredIntent = Intent(DELIVERED_ACTION)
-      deliveredIntent.putExtra(DELIVERED_INTENT_EXTRA, msg.id)
-      val deliveredPI = PendingIntent.getBroadcast(applicationContext, 0, sentIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+      val deliveredPI = PendingIntent.getBroadcast(applicationContext, 0, deliveredIntent,  PendingIntent.FLAG_UPDATE_CURRENT)
 
       val smsManager = SmsManager.getDefault()
       smsManager.sendTextMessage(msg.num, null, msg.message, sentPI, deliveredPI)

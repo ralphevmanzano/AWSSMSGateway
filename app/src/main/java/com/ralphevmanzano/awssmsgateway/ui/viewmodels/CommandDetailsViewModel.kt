@@ -75,6 +75,9 @@ class CommandDetailsViewModel(application: Application) : AndroidViewModel(appli
       .subscribeOn(Schedulers.io())
       .subscribe({
         _snackbarMessage.postValue(Event("Command added successfully!"))
+        commandName.postValue("")
+        description.postValue("")
+        remarks.postValue("")
       }, { error ->
         _snackbarMessage.postValue(Event("Error adding new command"))
         Log.e("CommandsViewModel", "Error adding new command ${error.localizedMessage}")

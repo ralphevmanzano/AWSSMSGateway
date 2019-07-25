@@ -1,5 +1,9 @@
 package com.ralphevmanzano.awssmsgateway.ui.fragments
 
+import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -8,6 +12,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
@@ -28,6 +33,7 @@ import com.ralphevmanzano.awssmsgateway.models.SmsEntity
 import com.ralphevmanzano.awssmsgateway.models.Station
 import com.ralphevmanzano.awssmsgateway.receivers.SmsSendBroadcastReceiver
 import com.ralphevmanzano.awssmsgateway.ui.viewmodels.SendCommandViewModel
+import com.ralphevmanzano.awssmsgateway.utils.DELIVERED_ACTION
 import com.ralphevmanzano.awssmsgateway.utils.SENT_ACTION
 import com.ralphevmanzano.awssmsgateway.utils.SMS_UNIQUE_WORK
 import com.ralphevmanzano.awssmsgateway.utils.SMS_WORKER_INPUT_KEY

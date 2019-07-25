@@ -81,6 +81,11 @@ class StationDetailsViewModel(application: Application) : AndroidViewModel(appli
       .subscribeOn(Schedulers.io())
       .subscribe({
         _snackbarMessage.postValue(Event("Station added successfully!"))
+        stationName.postValue("")
+        mobileNo.postValue("")
+        imei.postValue("")
+        description.postValue("")
+        remarks.postValue("")
       }, { error ->
         _snackbarMessage.postValue(Event("Error adding new station"))
         Log.e("StationsViewModel", "Error adding new station ${error.localizedMessage}")

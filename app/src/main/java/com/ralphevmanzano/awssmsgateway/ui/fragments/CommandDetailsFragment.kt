@@ -31,7 +31,7 @@ class CommandDetailsFragment : Fragment() {
     return binding.root
   }
 
-  override fun onStart() {
+  override fun onStart() {2
     super.onStart()
     activity?.toolbar?.let {
       when(args.type) {
