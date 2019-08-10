@@ -21,6 +21,7 @@ object PreferenceHelper {
    * puts a key value pair in shared prefs if doesn't exists, otherwise updates value on given [key]
    */
   operator fun SharedPreferences.set(key: String, value: Any?) {
+
     when (value) {
       is String? -> edit { it.putString(key, value) }
       is Int -> edit { it.putInt(key, value) }

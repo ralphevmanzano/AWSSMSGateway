@@ -25,7 +25,7 @@ public class CrcCalculator {
     long hash = ComputeCrc(init, data, 0, data.length);
     long result = (hash ^ Parameters.XorOut) & _mask;
 
-    return Long.toHexString(result).toUpperCase();
+    return String.format("0x%02X", result);
   }
 
   private long ComputeCrc(long init, byte[] data, int offset, int length) {

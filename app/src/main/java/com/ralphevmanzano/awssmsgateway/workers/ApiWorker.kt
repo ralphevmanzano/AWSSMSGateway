@@ -11,18 +11,21 @@ import com.ralphevmanzano.awssmsgateway.R
 import com.ralphevmanzano.awssmsgateway.models.SmsModel
 import com.ralphevmanzano.awssmsgateway.models.WeatherDataModel
 import com.ralphevmanzano.awssmsgateway.utils.API_WORKER_INPUT_KEY
+import com.ralphevmanzano.awssmsgateway.utils.PREF_SERVER_IP
 import io.reactivex.Single
+import com.ralphevmanzano.awssmsgateway.utils.PreferenceHelper.get
+import com.ralphevmanzano.awssmsgateway.utils.PreferenceHelper.set
+import com.ralphevmanzano.awssmsgateway.utils.PreferenceHelper.defaultPrefs
 
 class ApiWorker(ctx: Context, params: WorkerParameters) : RxWorker(ctx, params) {
 
   private val apiService = ApiService.create()
-  private val pref = PreferenceManager.getDefaultSharedPreferences(ctx)
-  private val ipKey = ctx.getString(R.string.server_ip)
+  private val pref = defaultPrefs(ctx)
 
   override fun createWork(): Single<Result> {
     val data = inputData.getString(API_WORKER_INPUT_KEY)
     val weatherData = Gson().fromJson(data, WeatherDataModel::class.java)
-    val ip = pref.getString(ipKey, "192.168.1.15")
+    val ip = pref[PREF_SERVER_IP, "192.168.1.15"]
 
     return apiService.sendToServer("http://$ip/", weatherData)
       .retry(3)
